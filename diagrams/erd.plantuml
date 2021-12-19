@@ -1,0 +1,79 @@
+@startuml M33tings
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+/' can sort user's friends by active status '/
+
+entity User {
+    * id : number <<generated>>
+    --
+    * nick_name : text
+    * password : text
+    picture : varchar
+    * created_at : datetime
+}
+
+entity Event {
+    * id : number <<generated>>
+    --
+    * creator_id : number <<FK>>
+    * name : varchar
+    * date : datetime
+    * created_at : datetime
+}
+
+entity EventAddress {
+    * id : number <<generated>>
+    --
+    *event_id : number <<FK>>
+    *street : text
+    *city : text
+    *country : text
+    *created_at : timestamp
+}
+
+entity Participant {
+    * id : number <<generated>>
+    --
+    * user_id : number <<FK>>
+    * event_id : number <<FK>>
+    * created_at : datetime
+}
+
+' entity Gallery {
+'     * id : number <<generated>>
+'     --
+'     * event_id : number <<FK>>
+' }
+
+' entity Photo {
+'     * id : number <<generated>>
+'     --
+'     * uploader_id : number <<FK>>
+'     * gallery_id : number <<FK>>
+'     * path : text
+'     * created_at : datetime 
+' }
+
+entity Note {
+    * id : number <<generated>>
+    --
+    * event_id : number <<FK>>
+    * content : text
+    * created_at : datetime
+}
+
+
+Event }o..|| User
+' Event ||..|| Gallery
+' Gallery ||..o{ Photo
+' Photo }o..|| User
+Event ||..o{ Note
+Event ||..|{ EventAddress
+Event ||..o{ Participant
+User ||..o{ Participant
+
+@enduml
