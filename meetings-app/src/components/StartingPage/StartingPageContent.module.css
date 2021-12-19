@@ -1,0 +1,32 @@
+.home-page {
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.home-page__link {
+  text-align: center;
+}
+
+.home-page__link a {
+  padding: var(--padding-medium) var(--padding-big);
+  margin: 0 auto;
+
+  color: var(--black);
+  font-size: var(--font-size-normal);
+
+  transition: var(--transition-short);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--secondary-light);
+}
+
+.home-page__link a:hover {
+  background-color: var(--secondary);
+}
+
+@media only screen and (max-width: 1024px) {
+  .home-page {
+    width: 95%;
+    padding-top: 4rem;
+  }
+}

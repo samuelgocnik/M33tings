@@ -1,0 +1,11 @@
+.button {
+  display: block;
+  border: none;
+  font-size: var(--font-size-normal);
+  transition: var(--transition-short);
+}
+
+.button:hover {
+  cursor: pointer;
+  border: none;
+}

@@ -1,0 +1,17 @@
+.main {
+  width: 75%;
+  margin: 0 auto;
+  transition: var(--transition-short);
+}
+
+@media only screen and (max-width: 1024px) {
+  .main {
+    width: 85%;
+  }
+}
+
+@media only screen and (max-width: 720px) {
+  .main {
+    width: 95%;
+  }
+}
