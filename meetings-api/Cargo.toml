@@ -1,8 +1,17 @@
 [package]
-name = "meetings-backend"
+name = "meetings-api"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+sqlx = { version = "0.5", features = [ "runtime-actix-rustls", "postgres", "chrono" ] } 
+actix-web = "4.0.0-beta.11"
+actix-cors = "0.5.4"
+serde = { version = "1.0", features = [ "derive" ] }
+serde_json = "1.0.73"
+chrono = { version = "0.4.19", features = [ "serde" ] }
+anyhow = "1.0.51"
+dotenv = "0.15.0"
+async-trait = "0.1.51"
