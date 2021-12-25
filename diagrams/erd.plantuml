@@ -21,7 +21,6 @@ entity Event {
     --
     * creator_id : number <<FK>>
     * name : varchar
-    * date : datetime
     * created_at : datetime
 }
 
@@ -33,6 +32,13 @@ entity EventAddress {
     *city : text
     *country : text
     *created_at : timestamp
+}
+
+entity EventDate {
+    * id : number <<generated>>
+    --
+    * date : datetime
+    * created_at : timestamp
 }
 
 entity Participant {
@@ -72,6 +78,7 @@ Event }o..|| User
 ' Gallery ||..o{ Photo
 ' Photo }o..|| User
 Event ||..o{ Note
+Event ||..|{ EventDate
 Event ||..|{ EventAddress
 Event ||..o{ Participant
 User ||..o{ Participant
