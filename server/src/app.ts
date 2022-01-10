@@ -5,10 +5,15 @@ import bcrypt from 'bcrypt';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import jwt from 'jsonwebtoken';
+
+import dotenv from 'dotenv';
 
 const saltRounds = 10;
 const app = express();
 const port = 4000;
+
+dotenv.config();
 
 declare module 'express-session' {
   export interface SessionData {
@@ -62,9 +67,22 @@ const db = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello consumer!' });
-});
+// verifying if provided token is valid
+const verifyJWT = (req: Request, res: Response, next) => {
+  const token: string = req.headers['x-access-token'].toString();
+  if (!token) {
+    res.json({ auth: false, message: 'No authentication token was provided!' });
+    return;
+  }
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      res.json({ auth: false, message: 'Authentication failed' });
+      return;
+    }
+    res.locals.userId = decoded.id;
+    next();
+  });
+};
 
 app.get('/logout', (req: Request, res: Response) => {
   if (req.session.user) {
@@ -83,7 +101,6 @@ app.get('/logout', (req: Request, res: Response) => {
 
 app.get('/login', (req: Request, res: Response) => {
   if (req.session.user) {
-    console.log('logged');
     res.json({
       loggedIn: true,
       user: {
@@ -94,14 +111,18 @@ app.get('/login', (req: Request, res: Response) => {
       },
     });
   } else {
-    console.log('not logged');
     res.json({ loggedIn: false, user: null });
   }
 });
 
 app.post('/login', (req: Request, res: Response) => {
-  const username = req.body.username;
-  const pwd = req.body.pwd;
+  const username: string = req.body.username;
+  const pwd: string = req.body.pwd;
+
+  if (username.length < 4 || username.length > 32 || pwd.length < 6) {
+    res.json({ message: 'Invalid username or password' });
+    return;
+  }
 
   db.query(
     'SELECT * FROM users WHERE name = $1',
@@ -109,16 +130,20 @@ app.post('/login', (req: Request, res: Response) => {
     (error, result) => {
       if (error) {
         res.status(404).json(error);
-        return;
       }
 
       if (result.rowCount > 0) {
         bcrypt.compare(pwd, result.rows[0].pwd, (err, same) => {
           if (err) {
             res.status(404).json(err);
-            return;
           }
           if (same) {
+            // create token
+            const id = result.rows[0].id;
+            const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+              expiresIn: 300,
+            });
+
             // create user's session
             req.session.user = {
               id: result.rows[0].id,
@@ -126,9 +151,19 @@ app.post('/login', (req: Request, res: Response) => {
               picture: result.rows[0].picture,
               created_at: result.rows[0].created_at,
             };
-            res.json(req.session.user);
+            res.json({
+              auth: true,
+              token: token,
+              message: null,
+              result: req.session.user,
+            });
           } else {
-            res.json({ message: 'Wrong password!' });
+            res.json({
+              auth: false,
+              token: null,
+              message: 'Wrong password!',
+              result: null,
+            });
           }
         });
       } else {
@@ -141,8 +176,13 @@ app.post('/login', (req: Request, res: Response) => {
 // returning ID of newly registered user
 // in db has to be at least one user for correct working
 app.post('/register', (req: Request, res: Response) => {
-  const username = req.body.username;
-  const pwd = req.body.pwd;
+  const username: string = req.body.username;
+  const pwd: string = req.body.pwd;
+
+  if (username.length < 4 || username.length > 32 || pwd.length < 6) {
+    res.json({ message: 'Invalid username or password' });
+    return;
+  }
 
   bcrypt.hash(pwd, saltRounds, (error, hash) => {
     if (error) {
@@ -169,14 +209,14 @@ app.post('/register', (req: Request, res: Response) => {
         if (result.rowCount == 0) {
           res.json({ message: 'User already exists!', result: result });
         } else {
-          res.status(201).json(result);
+          res.json(result);
         }
       }
     );
   });
 });
 
-app.get('/events', (req: Request, res: Response) => {
+app.get('/events', verifyJWT, (req: Request, res: Response) => {
   db.query('SELECT * FROM event', (error, results) => {
     if (error) {
       throw error;

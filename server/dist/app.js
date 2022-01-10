@@ -10,9 +10,12 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_session_1 = __importDefault(require("express-session"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const saltRounds = 10;
 const app = (0, express_1.default)();
 const port = 4000;
+dotenv_1.default.config();
 // automatically parse every sent object
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
@@ -36,6 +39,7 @@ app.use((0, express_session_1.default)({
     cookie: {
         sameSite: 'none',
         // secure: true,   // uncomment for production
+        maxAge: 1000 * 60 * 60 * 12, // lasts for 12h, default is 'session' -> cookie will last until closing browser etc.
     },
 }));
 const db = new pg_1.Pool({
@@ -46,9 +50,22 @@ const db = new pg_1.Pool({
     port: 5432,
     connectionTimeoutMillis: 2000,
 });
-app.get('/', (req, res) => {
-    res.json({ message: 'Hello consumer!' });
-});
+// verifying if provided token is valid
+const verifyJWT = (req, res, next) => {
+    const token = req.headers['x-access-token'].toString();
+    if (!token) {
+        res.json({ auth: false, message: 'No authentication token was provided!' });
+        return;
+    }
+    jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            res.json({ auth: false, message: 'Authentication failed' });
+            return;
+        }
+        res.locals.userId = decoded.id;
+        next();
+    });
+};
 app.get('/logout', (req, res) => {
     if (req.session.user) {
         req.session.destroy((err) => {
@@ -66,7 +83,6 @@ app.get('/logout', (req, res) => {
 });
 app.get('/login', (req, res) => {
     if (req.session.user) {
-        console.log('logged');
         res.json({
             loggedIn: true,
             user: {
@@ -78,25 +94,31 @@ app.get('/login', (req, res) => {
         });
     }
     else {
-        console.log('not logged');
         res.json({ loggedIn: false, user: null });
     }
 });
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
+    if (username.length < 4 || username.length > 32 || pwd.length < 6) {
+        res.json({ message: 'Invalid username or password' });
+        return;
+    }
     db.query('SELECT * FROM users WHERE name = $1', [username], (error, result) => {
         if (error) {
             res.status(404).json(error);
-            return;
         }
         if (result.rowCount > 0) {
             bcrypt_1.default.compare(pwd, result.rows[0].pwd, (err, same) => {
                 if (err) {
                     res.status(404).json(err);
-                    return;
                 }
                 if (same) {
+                    // create token
+                    const id = result.rows[0].id;
+                    const token = jsonwebtoken_1.default.sign({ id }, process.env.JWT_SECRET, {
+                        expiresIn: 300,
+                    });
                     // create user's session
                     req.session.user = {
                         id: result.rows[0].id,
@@ -104,10 +126,20 @@ app.post('/login', (req, res) => {
                         picture: result.rows[0].picture,
                         created_at: result.rows[0].created_at,
                     };
-                    res.json(req.session.user);
+                    res.json({
+                        auth: true,
+                        token: token,
+                        message: null,
+                        result: req.session.user,
+                    });
                 }
                 else {
-                    res.json({ message: 'Wrong password!' });
+                    res.json({
+                        auth: false,
+                        token: null,
+                        message: 'Wrong password!',
+                        result: null,
+                    });
                 }
             });
         }
@@ -121,6 +153,10 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
+    if (username.length < 4 || username.length > 32 || pwd.length < 6) {
+        res.json({ message: 'Invalid username or password' });
+        return;
+    }
     bcrypt_1.default.hash(pwd, saltRounds, (error, hash) => {
         if (error) {
             res.status(404).json(error);
@@ -143,12 +179,12 @@ app.post('/register', (req, res) => {
                 res.json({ message: 'User already exists!', result: result });
             }
             else {
-                res.status(201).json(result);
+                res.json(result);
             }
         });
     });
 });
-app.get('/events', (req, res) => {
+app.get('/events', verifyJWT, (req, res) => {
     db.query('SELECT * FROM event', (error, results) => {
         if (error) {
             throw error;
