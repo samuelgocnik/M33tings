@@ -1,18 +1,17 @@
 import React from 'react';
 import { Fragment } from 'react';
-import { useAuth } from '../../store/auth-context';
+import { useAppSelector } from '../../hooks/use-selector';
 import classes from './Layout.module.css';
 
 import MainNavigation from './MainNavigation';
 
-
 const Layout = (props: { children: any }) => {
-  const { currentUser } = useAuth();
+  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
 
   return (
     <Fragment>
-      {currentUser && <MainNavigation />}
-      <main className={currentUser ? classes.main : ''}>{props.children}</main>
+      {loggedIn && <MainNavigation />}
+      <main className={loggedIn ? classes.main : ''}>{props.children}</main>
     </Fragment>
   );
 };

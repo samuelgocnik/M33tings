@@ -1,91 +1,111 @@
-import React, { useState } from 'react';
+import Axios from 'axios';
+import React, { useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { useAppDispatch } from '../../../hooks/use-dispatch';
 import useInput from '../../../hooks/use-input';
-import { useAuth } from '../../../store/auth-context';
+import { useAppSelector } from '../../../hooks/use-selector';
+import { IUser } from '../../../models/User';
+import { authActions } from '../../../store/auth-slice';
+import { messageActions } from '../../../store/message-slice';
+import API_URL from '../../../utils/config';
 import Button from '../../UI/Button';
+import Input from '../../UI/Input/Input';
 import LoadingDots from '../../UI/Loading/LoadingDots';
+import Message from '../../UI/Messages/Message';
 import classes from './AuthForm.module.css';
 
 function LogIn() {
   const history = useHistory();
-  const { logIn } = useAuth();
+  const { login } = authActions;
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
-  const {
-    value: emailValue,
-    isValid: emailIsValid,
-    wasTouched: emailWasTouched,
-    inputChangeHandler: emailChangeHandler,
-    inputBlurHandler: emailBlurHandler,
-  } = useInput(
-    (value) => value.trim().includes('@') && value.trim().includes('.')
+  const nameInputRef = useRef<HTMLInputElement>();
+  const passwordInputRef = useRef<HTMLInputElement>();
+
+  const successfulRegistration: boolean = useAppSelector(
+    (state) => state.message.successfulRegistration
   );
 
-  const {
-    value: passwordValue,
-    isValid: passwordIsValid,
-    wasTouched: passwordWasTouched,
-    inputChangeHandler: passwordChangeHandler,
-    inputBlurHandler: passwordBlurHandler,
-  } = useInput((value) => value.trim().length > 5);
+  const successfulLogout: boolean = useAppSelector(
+    (state) => state.message.successfulLogout
+  );
 
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
 
-    if (!emailIsValid || !passwordIsValid) {
-      return setError('Fill up all inputs correctly');
+    dispatch(messageActions.setSuccessfulLogout({ value: false }));
+
+    const name = nameInputRef.current?.value.trim() || '';
+    const password = passwordInputRef.current?.value.trim() || '';
+
+    if (name.length < 4 || name.length > 32) {
+      return setError('Enter a valid name');
+    }
+    if (password.length < 6) {
+      return setError('Enter a valid password');
     }
 
     try {
       setError('');
       setIsLoading(true);
-      await logIn(emailValue, passwordValue);
+      await Axios.post(`${API_URL}login`, {
+        username: name,
+        pwd: password,
+      }).then(
+        (res: {
+          data: {
+            auth: boolean;
+            token: string | null;
+            message: string | null;
+            result: IUser | null;
+          };
+        }) => {
+          if (!res.data.auth && res.data.message) {
+            throw new Error(res.data.message);
+          }
+          localStorage.setItem('token', res.data.token || 'Invalid token');
+          dispatch(login({ user: res.data.result }));
+        }
+      );
       history.push('/meetings');
     } catch (error) {
-      setError('Failed to log in');
+      setError('Failed to log in: ' + error);
     }
     setIsLoading(false);
   }
 
-  const emailHasError = emailWasTouched && !emailIsValid;
-  const passwordHasError = passwordWasTouched && !passwordIsValid;
-
   return (
     <section className={classes['auth-form']}>
       <h1 className={classes['auth-form__heading']}>Log In</h1>
-      {error && <span className={classes['auth-form__error']}>{error}</span>}
+      {error && <Message type="error" value={error} />}
+      {successfulLogout && (
+        <Message type="success" value="Successfully log out" />
+      )}
+      {successfulRegistration && (
+        <Message type="success" value="Successfully registered" />
+      )}
       <form onSubmit={submitHandler}>
-        <div
-          className={`${classes['auth-form__input']} ${
-            emailHasError && classes['auth-form__input--error']
-          }`}
-        >
-          <label htmlFor="email">Your Email</label>
-          <input
-            value={emailValue}
-            onChange={emailChangeHandler}
-            onBlur={emailBlurHandler}
-            type="email"
-            id="email"
-          />
-        </div>
+        <Input
+          ref={nameInputRef}
+          id="name"
+          label="Your nickname"
+          type="text"
+          error_message="Enter a valid nickname (4-32 chars long)"
+          validate={(value: string): boolean =>
+            value.trim().length > 3 && value.trim().length < 33
+          }
+        />
 
-        <div
-          className={`${classes['auth-form__input']} ${
-            passwordHasError && classes['auth-form__input--error']
-          }`}
-        >
-          <label htmlFor="password">Your Password</label>
-          <input
-            value={passwordValue}
-            onChange={passwordChangeHandler}
-            onBlur={passwordBlurHandler}
-            type="password"
-            id="password"
-            required
-          />
-        </div>
+        <Input
+          ref={passwordInputRef}
+          id="password"
+          label="Your password"
+          type="password"
+          error_message="Enter a valid password (at least 6 chars long)"
+          validate={(value: string): boolean => value.trim().length > 5}
+        />
 
         <div className={classes.actions}>
           {!isLoading && (
@@ -97,9 +117,6 @@ function LogIn() {
             />
           )}
           {isLoading && <LoadingDots />}
-          <div className={classes['auth-form__link']}>
-            <Link to="/forgot-password">Forgot password</Link>
-          </div>
         </div>
       </form>
     </section>

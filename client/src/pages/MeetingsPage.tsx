@@ -1,7 +1,8 @@
 import React from 'react';
+import NewEvent from '../components/Events/NewEvent';
 
 const MeetingsPage = () => {
-  return <div>wdfn</div>;
+  return <NewEvent />;
 };
 
 export default MeetingsPage;

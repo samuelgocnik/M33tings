@@ -1,0 +1,17 @@
+.message {
+  display: block;
+  padding: var(--padding-medium) 0;
+  margin: var(--margin-small) 0;
+  text-align: center;
+  border-radius: var(--border-radius-medium);
+}
+
+.success {
+  color: var(--success);
+  background-color: var(--success-light);
+}
+
+.error {
+  color: var(--danger);
+  background-color: var(--danger-light);
+}

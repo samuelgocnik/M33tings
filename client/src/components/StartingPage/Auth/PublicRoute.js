@@ -1,15 +1,15 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useAuth } from '../../../store/auth-context';
+import { useSelector } from 'react-redux';
 
 const PublicRoute = ({ component: Component, ...rest }) => {
-  const { currentUser } = useAuth();
+  const loggedIn = useSelector((state) => state.auth.loggedIn);
 
   return (
     <Route
       {...rest}
       render={(props) => {
-        return currentUser ? (
+        return loggedIn ? (
           <Redirect to="/meetings" />
         ) : (
           <Component {...props} />

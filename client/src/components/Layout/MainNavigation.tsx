@@ -1,7 +1,11 @@
+import Axios from 'axios';
 import React, { useState } from 'react';
 import BEMHelper from 'react-bem-helper';
 import { Link, useHistory } from 'react-router-dom';
-import { useAuth } from '../../store/auth-context';
+import { useAppDispatch } from '../../hooks/use-dispatch';
+import { authActions } from '../../store/auth-slice';
+import { messageActions } from '../../store/message-slice';
+import API_URL from '../../utils/config';
 import Button from '../UI/Button';
 import LoadingDots from '../UI/Loading/LoadingDots';
 import DesktopLogo from './../../assets/icons/m33tings-desktop.svg';
@@ -12,20 +16,22 @@ const classes = new BEMHelper({
 });
 
 const MainNavigation = () => {
-  const { logOut } = useAuth();
-
+  const { logout } = authActions;
+  const { setSuccessfulLogout } = messageActions;
+  const dispatch = useAppDispatch();
   const history = useHistory();
-  const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function logoutHandler() {
     try {
-      setError('');
       setIsLoading(true);
-      await logOut();
-      history.push('/');
+      await Axios.get(`${API_URL}logout`).then((_) => {
+        dispatch(logout());
+      });
+      dispatch(setSuccessfulLogout({ value: true }));
+      history.push('/login');
     } catch (error) {
-      setError('Failed to log out');
+      console.log(error);
     }
     setIsLoading(false);
   }
@@ -44,12 +50,14 @@ const MainNavigation = () => {
             <Link to="/profile">Profile</Link>
           </li>
           <li {...classes('item', 'logout')}>
-            <Button
-              text={'Logout'}
-              type="button"
-              className=""
-              onClick={logoutHandler}
-            />
+            {!isLoading && (
+              <Button
+                text={'Logout'}
+                type="button"
+                className=""
+                onClick={logoutHandler}
+              />
+            )}
             {isLoading && <LoadingDots />}
           </li>
         </ul>

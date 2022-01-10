@@ -1,122 +1,98 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import Axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import useInput from '../../../hooks/use-input';
-import { useAuth } from '../../../store/auth-context';
+import { useHistory } from 'react-router-dom';
+import { useAppDispatch } from '../../../hooks/use-dispatch';
+import { messageActions } from '../../../store/message-slice';
 import Button from '../../UI/Button';
 import LoadingDots from '../../UI/Loading/LoadingDots';
 import classes from './AuthForm.module.css';
+import API_URL from '../../../utils/config';
+import Message from '../../UI/Messages/Message';
+import Input from '../../UI/Input/Input';
 
 function SignUpForm() {
   const history = useHistory();
-  const { signUp } = useAuth();
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const nameInputRef = useRef<HTMLInputElement>();
+  const passwordInputRef = useRef<HTMLInputElement>();
+  const passwordConfirmationInputRef = useRef<HTMLInputElement>();
 
-  const {
-    value: emailValue,
-    isValid: emailIsValid,
-    wasTouched: emailWasTouched,
-    inputChangeHandler: emailChangeHandler,
-    inputBlurHandler: emailBlurHandler,
-  } = useInput(
-    (value) => value.trim().includes('@') && value.trim().includes('.')
-  );
-
-  const {
-    value: passwordValue,
-    isValid: passwordIsValid,
-    wasTouched: passwordWasTouched,
-    inputChangeHandler: passwordChangeHandler,
-    inputBlurHandler: passwordBlurHandler,
-  } = useInput((value) => value.trim().length > 5);
-
-  const {
-    value: passwordConfirmationValue,
-    isValid: passwordConfirmationIsValid,
-    wasTouched: passwordConfirmationWasTouched,
-    inputChangeHandler: passwordConfirmationChangeHandler,
-    inputBlurHandler: passwordConfirmationBlurHandler,
-  } = useInput((value) => value.trim().length > 5);
+  useEffect(() => {
+    dispatch(messageActions.setSuccessfulRegistration({ value: false }));
+    return () => {};
+  }, [dispatch]);
 
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
 
-    if (!emailIsValid || !passwordIsValid || !passwordConfirmationIsValid) {
-      return setError('Fill up all inputs correctly');
-    }
+    const name = nameInputRef.current?.value.trim() || '';
+    const password = passwordInputRef.current?.value.trim() || '';
 
-    if (passwordValue !== passwordConfirmationValue) {
+    if (name.length < 4 || name.length > 32) {
+      return setError('Enter a valid name');
+    }
+    if (password.length < 6) {
+      return setError('Enter a valid password');
+    }
+    if (password !== passwordConfirmationInputRef.current?.value) {
       return setError('Passwords do not match');
     }
 
     try {
       setError('');
       setIsLoading(true);
-      await signUp(emailValue, passwordValue);
-      history.push('/meetings');
+      await Axios.post(`${API_URL}register`, {
+        username: name,
+        pwd: password,
+      }).then((res) => {
+        if (res.data.message) {
+          throw new Error(res.data.message);
+        }
+      });
+      dispatch(messageActions.setSuccessfulRegistration({ value: true }));
+      history.push('/login');
     } catch (error) {
-      setError('Failed to create an account');
+      setError('Failed to sign up: ' + error);
     }
     setIsLoading(false);
   }
 
-  const emailHasError = emailWasTouched && !emailIsValid;
-  const passwordHasError = passwordWasTouched && !passwordIsValid;
-  const passwordConfirmationHasError =
-    passwordConfirmationWasTouched && !passwordConfirmationIsValid;
-
   return (
     <section className={classes['auth-form']}>
       <h1 className={classes['auth-form__heading']}>Sign Up</h1>
-      {error && <span className={classes['auth-form__error']}>{error}</span>}
+      {error && <Message type="error" value={error} />}
       <form onSubmit={submitHandler}>
-        <div
-          className={`${classes['auth-form__input']} ${
-            emailHasError && classes['auth-form__input--error']
-          }`}
-        >
-          <label htmlFor="email">Your Email</label>
-          <input
-            value={emailValue}
-            onChange={emailChangeHandler}
-            onBlur={emailBlurHandler}
-            type="email"
-            id="email"
-          />
-        </div>
+        <Input
+          ref={nameInputRef}
+          id="name"
+          label="Your nickname"
+          type="text"
+          error_message="Enter a valid nickname (4-32 chars long)"
+          validate={(value: string): boolean =>
+            value.trim().length > 3 && value.trim().length < 33
+          }
+        />
 
-        <div
-          className={`${classes['auth-form__input']} ${
-            passwordHasError && classes['auth-form__input--error']
-          }`}
-        >
-          <label htmlFor="password">Your Password</label>
-          <input
-            value={passwordValue}
-            onChange={passwordChangeHandler}
-            onBlur={passwordBlurHandler}
-            type="password"
-            id="password"
-            required
-          />
-        </div>
+        <Input
+          ref={passwordInputRef}
+          id="password"
+          label="Your password"
+          type="password"
+          error_message="Enter a valid password (at least 6 chars long)"
+          validate={(value: string): boolean => value.trim().length > 5}
+        />
 
-        <div
-          className={`${classes['auth-form__input']} ${
-            passwordConfirmationHasError && classes['auth-form__input--error']
-          }`}
-        >
-          <label htmlFor="passwordconfirmation">
-            Your password confirmation
-          </label>
-          <input
-            value={passwordConfirmationValue}
-            onChange={passwordConfirmationChangeHandler}
-            onBlur={passwordConfirmationBlurHandler}
-            type="password"
-            id="passwordconfirmation"
-          />
-        </div>
+        <Input
+          ref={passwordConfirmationInputRef}
+          id="passwordConfirm"
+          label="Confirm your password"
+          type="password"
+          error_message="Enter a valid password (at least 6 chars long)"
+          validate={(value: string): boolean => value.trim().length > 5}
+        />
 
         <div className={classes.actions}>
           {!isLoading && (
