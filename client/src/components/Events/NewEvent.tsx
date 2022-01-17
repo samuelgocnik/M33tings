@@ -1,11 +1,16 @@
-import React, { Fragment, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Button from '../UI/Button';
 import Input from '../UI/Input/Input';
-import DateTimePicker from 'react-datetime-picker';
+import Message from '../UI/Messages/Message';
+
+import './DateTimeSelector.css';
+
+import classes from './NewEvent.module.css';
 
 const NewEvent = () => {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState<Date>(new Date());
+  const [error, setError] = useState<string>('');
 
   // const dateOnChangeHandler = (event: {
   //   target: { value: React.SetStateAction<Date> };
@@ -16,11 +21,20 @@ const NewEvent = () => {
   const submitFormHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log(nameInputRef?.current?.value);
+    const name: string = nameInputRef.current?.value.trim() || '';
+
+    if (name.length < 4) {
+      return setError('Enter a valid name');
+    }
+
+    console.log(name, date.toString());
+    setError('');
   };
 
   return (
-    <Fragment>
+    <section className={classes['new-event-form']}>
+      <h1 className={classes['new-event-form__heading']}>Create a new event</h1>
+      {error && <Message type="error" value={error} />}
       <form onSubmit={submitFormHandler}>
         <Input
           ref={nameInputRef}
@@ -30,15 +44,16 @@ const NewEvent = () => {
           error_message="Enter a valid event name (at least 4 chars long)"
           validate={(data: string): boolean => data.trim().length > 4}
         />
-        <DateTimePicker onChange={date => setDate(date)} value={date} />
+        <div className={classes['new-event-form__datetime']}>
+        </div>
         <Button
           type="submit"
           text="Add event"
-          className=""
+          className={classes['new-event-form__submit']}
           onClick={() => {}}
         ></Button>
       </form>
-    </Fragment>
+    </section>
   );
 };
 

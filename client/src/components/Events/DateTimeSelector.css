@@ -1,0 +1,22 @@
+.datetime-selector .react-datetime-picker__wrapper {
+  padding: var(--padding-small) var(--padding-medium);
+  
+
+  border-radius: var(--border-radius-medium);
+  border: none;
+  background-color: var(--white);
+  color: black;
+}
+
+.datetime-selector .react-calendar {
+  border-radius: var(--border-radius-medium);
+  font-family: inherit;
+  inset: 100% auto auto -35%;
+}
+
+
+.datetime-selector .react-calendar__month-view__weekdays {
+  color: var(--black);
+  text-decoration: none;
+  font-family: inherit;
+}

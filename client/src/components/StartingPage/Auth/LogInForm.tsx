@@ -1,8 +1,7 @@
 import Axios from 'axios';
 import React, { useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../../../hooks/use-dispatch';
-import useInput from '../../../hooks/use-input';
 import { useAppSelector } from '../../../hooks/use-selector';
 import { IUser } from '../../../models/User';
 import { authActions } from '../../../store/auth-slice';
@@ -37,8 +36,8 @@ function LogIn() {
 
     dispatch(messageActions.setSuccessfulLogout({ value: false }));
 
-    const name = nameInputRef.current?.value.trim() || '';
-    const password = passwordInputRef.current?.value.trim() || '';
+    const name: string = nameInputRef.current?.value.trim() || '';
+    const password: string = passwordInputRef.current?.value.trim() || '';
 
     if (name.length < 4 || name.length > 32) {
       return setError('Enter a valid name');
