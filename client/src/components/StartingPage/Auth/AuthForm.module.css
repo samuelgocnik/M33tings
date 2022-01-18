@@ -9,7 +9,6 @@
   color: var(--white);
   font-size: inherit;
   background-color: var(--primary-dark);
-  border-radius: var(--border-radius-medium);
 
   transition: var(--transition-short);
 }

@@ -1,6 +1,5 @@
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import useInput from '../../../hooks/use-input';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../../../hooks/use-dispatch';
 import { messageActions } from '../../../store/message-slice';
@@ -10,6 +9,7 @@ import classes from './AuthForm.module.css';
 import API_URL from '../../../utils/config';
 import Message from '../../UI/Messages/Message';
 import Input from '../../UI/Input/Input';
+import Card from '../../UI/Card/Card';
 
 function SignUpForm() {
   const history = useHistory();
@@ -61,7 +61,7 @@ function SignUpForm() {
   }
 
   return (
-    <section className={classes['auth-form']}>
+    <Card className={classes['auth-form']}>
       <h1 className={classes['auth-form__heading']}>Sign Up</h1>
       {error && <Message type="error" value={error} />}
       <form onSubmit={submitHandler}>
@@ -106,7 +106,7 @@ function SignUpForm() {
           {isLoading && <LoadingDots />}
         </div>
       </form>
-    </section>
+    </Card>
   );
 }
 

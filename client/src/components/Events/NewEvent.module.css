@@ -9,7 +9,6 @@
   color: var(--white);
   font-size: inherit;
   background-color: var(--primary-dark);
-  border-radius: var(--border-radius-medium);
 
   transition: var(--transition-short);
 }
@@ -34,15 +33,13 @@
 }
 
 .new-event-form__datetime {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
-
-
 .react-datetime-picker__wrapper {
-    border-radius: var(--border-radius-medium);
+  border-radius: var(--border-radius-medium);
 }
 
 @media only screen and (max-width: 1024px) {

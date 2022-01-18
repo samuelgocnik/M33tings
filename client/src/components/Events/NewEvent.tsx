@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Button from '../UI/Button';
+import Card from '../UI/Card/Card';
 import Input from '../UI/Input/Input';
 import Message from '../UI/Messages/Message';
 
@@ -32,7 +33,7 @@ const NewEvent = () => {
   };
 
   return (
-    <section className={classes['new-event-form']}>
+    <Card className={classes['new-event-form']}>
       <h1 className={classes['new-event-form__heading']}>Create a new event</h1>
       {error && <Message type="error" value={error} />}
       <form onSubmit={submitFormHandler}>
@@ -53,7 +54,7 @@ const NewEvent = () => {
           onClick={() => {}}
         ></Button>
       </form>
-    </section>
+    </Card>
   );
 };
 

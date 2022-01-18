@@ -10,3 +10,14 @@ body {
   height: 100vh;
   background-color: var(--primary-lightest);
 }
+
+.card {
+  padding: var(--padding-medium);
+
+  border-radius: var(--border-radius-medium);
+  background-color: var(--white);
+
+  -webkit-box-shadow: 0.3rem 0.3rem 0.5rem 0.1rem rgba(0, 0, 0, 0.11);
+  box-shadow: 0.3rem 0.3rem 0.5rem 0.1rem rgba(0, 0, 0, 0.11);
+  transition: var(--transition-short);
+}

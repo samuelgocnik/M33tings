@@ -8,6 +8,7 @@ import { authActions } from '../../../store/auth-slice';
 import { messageActions } from '../../../store/message-slice';
 import API_URL from '../../../utils/config';
 import Button from '../../UI/Button';
+import Card from '../../UI/Card/Card';
 import Input from '../../UI/Input/Input';
 import LoadingDots from '../../UI/Loading/LoadingDots';
 import Message from '../../UI/Messages/Message';
@@ -76,7 +77,7 @@ function LogIn() {
   }
 
   return (
-    <section className={classes['auth-form']}>
+    <Card className={classes['auth-form']}>
       <h1 className={classes['auth-form__heading']}>Log In</h1>
       {error && <Message type="error" value={error} />}
       {successfulLogout && (
@@ -118,7 +119,7 @@ function LogIn() {
           {isLoading && <LoadingDots />}
         </div>
       </form>
-    </section>
+    </Card>
   );
 }
 
