@@ -10,6 +10,7 @@ import classes from './NewEvent.module.css';
 
 const NewEvent = () => {
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const noteInputRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [error, setError] = useState<string>('');
 
@@ -23,6 +24,7 @@ const NewEvent = () => {
     event.preventDefault();
 
     const name: string = nameInputRef.current?.value.trim() || '';
+    const note: string = noteInputRef.current?.value.trim() || '';
 
     if (name.length < 4) {
       return setError('Enter a valid name');
@@ -45,8 +47,15 @@ const NewEvent = () => {
           error_message="Enter a valid event name (at least 4 chars long)"
           validate={(data: string): boolean => data.trim().length > 4}
         />
-        <div className={classes['new-event-form__datetime']}>
-        </div>
+        <Input
+          ref={nameInputRef}
+          id="note"
+          label="Note"
+          type="text"
+          error_message=""
+          validate={(_: string): boolean => true}
+        />
+        <div className={classes['new-event-form__datetime']}></div>
         <Button
           type="submit"
           text="Add event"

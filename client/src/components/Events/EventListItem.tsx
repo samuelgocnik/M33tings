@@ -30,16 +30,15 @@ const EventListItem = (props: IEvent) => {
           <div className={classes['event__icon']}>
             <img src={PointingRightFinger} alt="Right pointing finger icon" />
           </div>
-          <div className={classes['event_address']}>
+          <div className={classes['event__summary']}>
             <p>{parseDate(props.datetime)}</p>
-            <p>
-              {props.address &&
-                props.address?.street +
-                  ', ' +
-                  props.address?.city +
-                  ', ' +
-                  props.address?.country}
-            </p>
+            {props.address && (
+              <p>
+                {props.address?.street + ', ' + props.address?.city + ', ' +
+                props.address?.country}
+              </p>
+            )}
+            {props.note && <p>{props.note}</p>}
           </div>
         </div>
         <div className={classes['event__participants']}>

@@ -4,6 +4,7 @@ export interface IEvent {
   going: string[];
   interested: string[];
   address: IEventAddress | null;
+  note: string | null;
   datetime: Date;
   creator: string;
   created_at: Date;

@@ -14,6 +14,7 @@ const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const MeetingsPage = React.lazy(() => import('./pages/MeetingsPage'));
+const NewMeetingPage = React.lazy(() => import('./pages/NewMeetingPage'));
 
 function App() {
   const { login } = authActions;
@@ -49,6 +50,12 @@ function App() {
           <PrivateRoute path={'/profile'} exact component={ProfilePage} />
 
           <PrivateRoute path={'/meetings'} exact component={MeetingsPage} />
+
+          <PrivateRoute
+            path={'/new-meeting'}
+            exact
+            component={NewMeetingPage}
+          />
 
           <Route path="*">
             <Redirect to="/" />

@@ -21,6 +21,7 @@ entity Event {
     --
     * creator_id : number <<FK>>
     * name : varchar
+      note: text
     * created_at : datetime
 }
 
@@ -29,6 +30,7 @@ entity EventAddress {
     --
     *event_id : number <<FK>>
     *street : text
+    *street_number: text
     *city : text
     *country : text
     *created_at : timestamp
@@ -46,6 +48,7 @@ entity Participant {
     --
     * user_id : number <<FK>>
     * event_id : number <<FK>>
+    * going : boolean
     * created_at : datetime
 }
 
@@ -79,7 +82,7 @@ Event }o..|| User
 ' Photo }o..|| User
 Event ||..o{ Note
 Event ||..|{ EventDate
-Event ||..|{ EventAddress
+Event ||..o{ EventAddress
 Event ||..o{ Participant
 User ||..o{ Participant
 

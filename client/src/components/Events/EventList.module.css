@@ -1,0 +1,21 @@
+.new-event__link {
+  text-align: center;
+}
+
+.new-event__link a {
+  display: inline-block;
+  padding: var(--padding-medium) var(--padding-big);
+  margin: var(--margin-medium) auto 0 auto;
+
+  color: var(--white);
+  font-size: var(--font-size-normal);
+
+  transition: var(--transition-short);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--primary-dark);
+}
+
+.new-event__link a:hover {
+  background-color: var(--primary-light);
+}
+

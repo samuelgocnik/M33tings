@@ -22,7 +22,7 @@
   flex-direction: row;
 }
 
-.event__info p:nth-child(2) {
+.event__info p:not(:first-child) {
   font-size: var(--font-size-smaller);
 }
 
@@ -67,7 +67,7 @@
   margin-right: var(--margin-medium);
 }
 
-.event__address {
+.event__summary {
   font-weight: 400;
 }
 
