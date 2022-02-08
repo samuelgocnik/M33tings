@@ -66,7 +66,7 @@ const verifyJWT = (req, res, next) => {
         next();
     });
 };
-app.get("/logout", (req, res) => {
+app.get("/auth/logout", (req, res) => {
     if (req.session.user) {
         req.session.destroy((err) => {
             if (err) {
@@ -81,7 +81,7 @@ app.get("/logout", (req, res) => {
         res.status(404).json();
     }
 });
-app.get("/login", (req, res) => {
+app.get("/auth/login", (req, res) => {
     if (req.session.user) {
         res.json({
             loggedIn: true,
@@ -97,7 +97,7 @@ app.get("/login", (req, res) => {
         res.json({ loggedIn: false, user: null });
     }
 });
-app.post("/login", (req, res) => {
+app.post("/auth/login", (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
     if (username.length < 4 || username.length > 32 || pwd.length < 6) {
@@ -150,7 +150,7 @@ app.post("/login", (req, res) => {
 });
 // returning ID of newly registered user
 // in db has to be at least one user for correct working
-app.post("/register", (req, res) => {
+app.post("/auth/register", (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
     if (username.length < 4 || username.length > 32 || pwd.length < 6) {

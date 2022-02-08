@@ -20,9 +20,11 @@ function App() {
   const dispatch = useAppDispatch();
 
   const loginHandler = useCallback(async () => {
-    await Axios.get(`${API_URL}login`)
+    await Axios.get(`${API_URL}auth/login`)
       .then((res) => {
+        console.log("kokot");
         if (res.data.loggedIn) {
+          console.log("got user");
           dispatch(login({ user: res.data.user }));
         }
       })

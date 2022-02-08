@@ -50,7 +50,7 @@ function LogIn() {
     try {
       setError('');
       setIsLoading(true);
-      await Axios.post(`${API_URL}login`, {
+      await Axios.post(`${API_URL}auth/login`, {
         username: name,
         pwd: password,
       }).then(
@@ -69,11 +69,12 @@ function LogIn() {
           dispatch(login({ user: res.data.result }));
         }
       );
+      setIsLoading(false);
       history.push('/meetings');
     } catch (error) {
+      setIsLoading(false);
       setError('Failed to log in: ' + error);
     }
-    setIsLoading(false);
   }
 
   return (

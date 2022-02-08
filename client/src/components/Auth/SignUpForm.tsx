@@ -22,7 +22,7 @@ function SignUpForm() {
 
   useEffect(() => {
     dispatch(messageActions.setSuccessfulRegistration({ value: false }));
-    return () => {};
+    return () => { };
   }, [dispatch]);
 
   async function submitHandler(event: { preventDefault: () => void }) {
@@ -44,7 +44,7 @@ function SignUpForm() {
     try {
       setError('');
       setIsLoading(true);
-      await Axios.post(`${API_URL}register`, {
+      await Axios.post(`${API_URL}auth/register`, {
         username: name,
         pwd: password,
       }).then((res) => {
@@ -53,11 +53,12 @@ function SignUpForm() {
         }
       });
       dispatch(messageActions.setSuccessfulRegistration({ value: true }));
+      setIsLoading(false);
       history.push('/login');
     } catch (error) {
+      setIsLoading(false);
       setError('Failed to sign up: ' + error);
     }
-    setIsLoading(false);
   }
 
   return (
@@ -100,7 +101,7 @@ function SignUpForm() {
               text="Create Account"
               type="submit"
               className={classes['auth-form__submit']}
-              onClick={() => {}}
+              onClick={() => { }}
             />
           )}
           {isLoading && <LoadingDots />}
