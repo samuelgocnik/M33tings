@@ -1,17 +1,17 @@
 import Axios from 'axios';
 import React, { useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../../../hooks/use-dispatch';
-import { useAppSelector } from '../../../hooks/use-selector';
-import { IUser } from '../../../models/User';
-import { authActions } from '../../../store/auth-slice';
-import { messageActions } from '../../../store/message-slice';
-import API_URL from '../../../utils/config';
-import Button from '../../UI/Button';
-import Card from '../../UI/Card/Card';
-import Input from '../../UI/Input/Input';
-import LoadingDots from '../../UI/Loading/LoadingDots';
-import Message from '../../UI/Messages/Message';
+import { useAppDispatch } from '../../hooks/use-dispatch';
+import { useAppSelector } from '../../hooks/use-selector';
+import { IUser } from '../../models/User';
+import { authActions } from '../../store/auth-slice';
+import { messageActions } from '../../store/message-slice';
+import API_URL from '../../utils/config';
+import Button from '../UI/Button';
+import Card from '../UI/Card/Card';
+import Input from '../UI/Input/Input';
+import LoadingDots from '../UI/Loading/LoadingDots';
+import Message from '../UI/Messages/Message';
 import classes from './AuthForm.module.css';
 
 function LogIn() {
@@ -113,7 +113,7 @@ function LogIn() {
               text="Login"
               type="submit"
               className={classes['auth-form__submit']}
-              onClick={() => {}}
+              onClick={() => { }}
             />
           )}
           {isLoading && <LoadingDots />}

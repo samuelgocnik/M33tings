@@ -13,7 +13,7 @@ Axios.defaults.withCredentials = true;
 Axios.defaults.baseURL = API_URL;
 Axios.defaults.headers.post['Content-Type'] = 'application/json';
 Axios.defaults.headers.post['Access-Control-Allow-Origin'] =
-  'http://localhost:4000';
+  API_URL;
 
 ReactDOM.render(
   <Provider store={store}>

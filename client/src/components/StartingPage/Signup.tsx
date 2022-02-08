@@ -1,20 +1,20 @@
 import React from 'react';
 import classes from './StartingPageContent.module.css';
-import LogInForm from './Auth/LogInForm';
+import SignUpForm from '../Auth/SignUpForm';
 import { Link } from 'react-router-dom';
-import StartingPageLogo from './StartingPageLogo';
+import StartingPageLogo from './Logo';
 
-const StartingPageLogin = () => {
+const StartingPageSignup = () => {
   return (
     <div className={classes['home-page']}>
       <StartingPageLogo />
 
-      <LogInForm />
+      <SignUpForm />
       <div className={classes['home-page__link']}>
-        <Link to="/signup">Doesn't have an account? Create an account</Link>
+        <Link to="/login">Already have an account? Log In</Link>
       </div>
     </div>
   );
 };
 
-export default StartingPageLogin;
+export default StartingPageSignup;

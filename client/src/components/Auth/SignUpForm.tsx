@@ -1,15 +1,15 @@
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../../../hooks/use-dispatch';
-import { messageActions } from '../../../store/message-slice';
-import Button from '../../UI/Button';
-import LoadingDots from '../../UI/Loading/LoadingDots';
+import { useAppDispatch } from '../../hooks/use-dispatch';
+import { messageActions } from '../../store/message-slice';
+import Button from '../UI/Button';
+import LoadingDots from '../UI/Loading/LoadingDots';
 import classes from './AuthForm.module.css';
-import API_URL from '../../../utils/config';
-import Message from '../../UI/Messages/Message';
-import Input from '../../UI/Input/Input';
-import Card from '../../UI/Card/Card';
+import API_URL from '../../utils/config';
+import Message from '../UI/Messages/Message';
+import Input from '../UI/Input/Input';
+import Card from '../UI/Card/Card';
 
 function SignUpForm() {
   const history = useHistory();

@@ -1,10 +1,9 @@
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import PrivateRoute from './components/StartingPage/Auth/PrivateRoute';
-
+import PrivateRoute from './components/routes/PrivateRoute';
+import PublicRoute from './components/routes/PublicRoute';
 import Layout from './components/Layout/Layout';
 import LoadingSpinner from './components/UI/Loading/LoadingSpinner';
-import PublicRoute from './components/StartingPage/Auth/PublicRoute';
 import Axios from 'axios';
 import { authActions } from './store/auth-slice';
 import { useAppDispatch } from './hooks/use-dispatch';
