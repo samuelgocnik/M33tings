@@ -1,13 +1,13 @@
-import express, { Request, Response } from 'express';
-import { Pool } from 'pg';
-import cors from 'cors';
-import bcrypt from 'bcrypt';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import jwt from 'jsonwebtoken';
+import express, { Request, Response } from "express";
+import { Pool } from "pg";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import jwt from "jsonwebtoken";
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 const saltRounds = 10;
 const app = express();
@@ -15,7 +15,7 @@ const port = 4000;
 
 dotenv.config();
 
-declare module 'express-session' {
+declare module "express-session" {
   export interface SessionData {
     user: { [key: string]: {} | null };
   }
@@ -25,17 +25,17 @@ declare module 'express-session' {
 app.use(express.json());
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: process.env.ORIGIN,
+    methods: ["GET", "POST"],
     credentials: true,
   })
 );
 
 app.use(function (req: Request, res: Response, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Origin", process.env.ORIGIN); // update to match the domain you will make the request from
   res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
 });
@@ -46,12 +46,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
   session({
-    name: 'user',
-    secret: 'thisismysecrctekeyfhrgfgrfrty84fw2i3ohfdhibenqdownmcwncir767', // a random unique string key used to authenticate a session, Can't be exposed to the public
+    name: "user",
+    secret: "thisismysecrctekeyfhrgfgrfrty84fw2i3ohfdhibenqdownmcwncir767", // a random unique string key used to authenticate a session, Can't be exposed to the public
     resave: false,
     saveUninitialized: false,
     cookie: {
-      sameSite: 'none',
+      sameSite: "none",
       // secure: true,   // uncomment for production
       maxAge: 1000 * 60 * 60 * 12, // lasts for 12h, default is 'session' -> cookie will last until closing browser etc.
     },
@@ -59,24 +59,24 @@ app.use(
 );
 
 const db = new Pool({
-  user: 'postgres',
-  password: 'postgres',
-  host: 'localhost',
-  database: 'm33tings',
+  user: "postgres",
+  password: "postgres",
+  host: "localhost",
+  database: "m33tings-web",
   port: 5432,
   connectionTimeoutMillis: 2000,
 });
 
 // verifying if provided token is valid
 const verifyJWT = (req: Request, res: Response, next) => {
-  const token: string = req.headers['x-access-token'].toString();
+  const token: string = req.headers["x-access-token"].toString();
   if (!token) {
-    res.json({ auth: false, message: 'No authentication token was provided!' });
+    res.json({ auth: false, message: "No authentication token was provided!" });
     return;
   }
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      res.json({ auth: false, message: 'Authentication failed' });
+      res.json({ auth: false, message: "Authentication failed" });
       return;
     }
     res.locals.userId = decoded.id;
@@ -84,22 +84,22 @@ const verifyJWT = (req: Request, res: Response, next) => {
   });
 };
 
-app.get('/logout', (req: Request, res: Response) => {
+app.get("/logout", (req: Request, res: Response) => {
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) {
-        return res.send({ message: 'Logout error' });
+        return res.send({ message: "Logout error" });
       }
       req.session = null;
-      res.clearCookie('user', { path: '/' });
-      res.send({ clearSession: 'success' });
+      res.clearCookie("user", { path: "/" });
+      res.send({ clearSession: "success" });
     });
   } else {
     res.status(404).json();
   }
 });
 
-app.get('/login', (req: Request, res: Response) => {
+app.get("/login", (req: Request, res: Response) => {
   if (req.session.user) {
     res.json({
       loggedIn: true,
@@ -115,17 +115,17 @@ app.get('/login', (req: Request, res: Response) => {
   }
 });
 
-app.post('/login', (req: Request, res: Response) => {
+app.post("/login", (req: Request, res: Response) => {
   const username: string = req.body.username;
   const pwd: string = req.body.pwd;
 
   if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-    res.json({ message: 'Invalid username or password' });
+    res.json({ message: "Invalid username or password" });
     return;
   }
 
   db.query(
-    'SELECT * FROM users WHERE name = $1',
+    "SELECT * FROM users WHERE name = $1",
     [username],
     (error, result) => {
       if (error) {
@@ -161,7 +161,7 @@ app.post('/login', (req: Request, res: Response) => {
             res.json({
               auth: false,
               token: null,
-              message: 'Wrong password!',
+              message: "Wrong password!",
               result: null,
             });
           }
@@ -175,12 +175,12 @@ app.post('/login', (req: Request, res: Response) => {
 
 // returning ID of newly registered user
 // in db has to be at least one user for correct working
-app.post('/register', (req: Request, res: Response) => {
+app.post("/register", (req: Request, res: Response) => {
   const username: string = req.body.username;
   const pwd: string = req.body.pwd;
 
   if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-    res.json({ message: 'Invalid username or password' });
+    res.json({ message: "Invalid username or password" });
     return;
   }
 
@@ -191,15 +191,15 @@ app.post('/register', (req: Request, res: Response) => {
     }
 
     db.query(
-      'INSERT INTO users (name, pwd) ' +
-        'SELECT $1, $2 ' +
-        'FROM users ' +
-        'WHERE NOT EXISTS( ' +
-        'SELECT id ' +
-        'FROM users ' +
-        'WHERE name = $1 ' +
-        ') ' +
-        'LIMIT 1',
+      "INSERT INTO users (name, pwd) " +
+        "SELECT $1, $2 " +
+        "FROM users " +
+        "WHERE NOT EXISTS( " +
+        "SELECT id " +
+        "FROM users " +
+        "WHERE name = $1 " +
+        ") " +
+        "LIMIT 1",
       [username, hash],
       (err, result) => {
         if (err) {
@@ -207,7 +207,7 @@ app.post('/register', (req: Request, res: Response) => {
           return;
         }
         if (result.rowCount == 0) {
-          res.json({ message: 'User already exists!', result: result });
+          res.json({ message: "User already exists!", result: result });
         } else {
           res.json(result);
         }
@@ -216,8 +216,8 @@ app.post('/register', (req: Request, res: Response) => {
   });
 });
 
-app.get('/events', verifyJWT, (req: Request, res: Response) => {
-  db.query('SELECT * FROM event', (error, results) => {
+app.get("/events", verifyJWT, (req: Request, res: Response) => {
+  db.query("SELECT * FROM event", (error, results) => {
     if (error) {
       throw error;
     }

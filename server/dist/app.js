@@ -19,69 +19,69 @@ dotenv_1.default.config();
 // automatically parse every sent object
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: process.env.ORIGIN,
+    methods: ["GET", "POST"],
     credentials: true,
 }));
 app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header("Access-Control-Allow-Origin", process.env.ORIGIN); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 app.use((0, cookie_parser_1.default)());
 //important line, always put it here, otherwise it won't work
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use((0, express_session_1.default)({
-    name: 'user',
-    secret: 'thisismysecrctekeyfhrgfgrfrty84fw2i3ohfdhibenqdownmcwncir767',
+    name: "user",
+    secret: "thisismysecrctekeyfhrgfgrfrty84fw2i3ohfdhibenqdownmcwncir767",
     resave: false,
     saveUninitialized: false,
     cookie: {
-        sameSite: 'none',
+        sameSite: "none",
         // secure: true,   // uncomment for production
         maxAge: 1000 * 60 * 60 * 12, // lasts for 12h, default is 'session' -> cookie will last until closing browser etc.
     },
 }));
 const db = new pg_1.Pool({
-    user: 'postgres',
-    password: 'postgres',
-    host: 'localhost',
-    database: 'm33tings',
+    user: "postgres",
+    password: "postgres",
+    host: "localhost",
+    database: "m33tings-web",
     port: 5432,
     connectionTimeoutMillis: 2000,
 });
 // verifying if provided token is valid
 const verifyJWT = (req, res, next) => {
-    const token = req.headers['x-access-token'].toString();
+    const token = req.headers["x-access-token"].toString();
     if (!token) {
-        res.json({ auth: false, message: 'No authentication token was provided!' });
+        res.json({ auth: false, message: "No authentication token was provided!" });
         return;
     }
     jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            res.json({ auth: false, message: 'Authentication failed' });
+            res.json({ auth: false, message: "Authentication failed" });
             return;
         }
         res.locals.userId = decoded.id;
         next();
     });
 };
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
     if (req.session.user) {
         req.session.destroy((err) => {
             if (err) {
-                return res.send({ message: 'Logout error' });
+                return res.send({ message: "Logout error" });
             }
             req.session = null;
-            res.clearCookie('user', { path: '/' });
-            res.send({ clearSession: 'success' });
+            res.clearCookie("user", { path: "/" });
+            res.send({ clearSession: "success" });
         });
     }
     else {
         res.status(404).json();
     }
 });
-app.get('/login', (req, res) => {
+app.get("/login", (req, res) => {
     if (req.session.user) {
         res.json({
             loggedIn: true,
@@ -97,14 +97,14 @@ app.get('/login', (req, res) => {
         res.json({ loggedIn: false, user: null });
     }
 });
-app.post('/login', (req, res) => {
+app.post("/login", (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
     if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-        res.json({ message: 'Invalid username or password' });
+        res.json({ message: "Invalid username or password" });
         return;
     }
-    db.query('SELECT * FROM users WHERE name = $1', [username], (error, result) => {
+    db.query("SELECT * FROM users WHERE name = $1", [username], (error, result) => {
         if (error) {
             res.status(404).json(error);
         }
@@ -137,7 +137,7 @@ app.post('/login', (req, res) => {
                     res.json({
                         auth: false,
                         token: null,
-                        message: 'Wrong password!',
+                        message: "Wrong password!",
                         result: null,
                     });
                 }
@@ -150,11 +150,11 @@ app.post('/login', (req, res) => {
 });
 // returning ID of newly registered user
 // in db has to be at least one user for correct working
-app.post('/register', (req, res) => {
+app.post("/register", (req, res) => {
     const username = req.body.username;
     const pwd = req.body.pwd;
     if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-        res.json({ message: 'Invalid username or password' });
+        res.json({ message: "Invalid username or password" });
         return;
     }
     bcrypt_1.default.hash(pwd, saltRounds, (error, hash) => {
@@ -162,21 +162,21 @@ app.post('/register', (req, res) => {
             res.status(404).json(error);
             return;
         }
-        db.query('INSERT INTO users (name, pwd) ' +
-            'SELECT $1, $2 ' +
-            'FROM users ' +
-            'WHERE NOT EXISTS( ' +
-            'SELECT id ' +
-            'FROM users ' +
-            'WHERE name = $1 ' +
-            ') ' +
-            'LIMIT 1', [username, hash], (err, result) => {
+        db.query("INSERT INTO users (name, pwd) " +
+            "SELECT $1, $2 " +
+            "FROM users " +
+            "WHERE NOT EXISTS( " +
+            "SELECT id " +
+            "FROM users " +
+            "WHERE name = $1 " +
+            ") " +
+            "LIMIT 1", [username, hash], (err, result) => {
             if (err) {
                 res.status(404).json(err);
                 return;
             }
             if (result.rowCount == 0) {
-                res.json({ message: 'User already exists!', result: result });
+                res.json({ message: "User already exists!", result: result });
             }
             else {
                 res.json(result);
@@ -184,8 +184,8 @@ app.post('/register', (req, res) => {
         });
     });
 });
-app.get('/events', verifyJWT, (req, res) => {
-    db.query('SELECT * FROM event', (error, results) => {
+app.get("/events", verifyJWT, (req, res) => {
+    db.query("SELECT * FROM event", (error, results) => {
         if (error) {
             throw error;
         }
