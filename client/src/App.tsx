@@ -1,7 +1,7 @@
 import React, { Suspense, useCallback, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import PrivateRoute from './components/routes/PrivateRoute';
-import PublicRoute from './components/routes/PublicRoute';
+import PrivateRoute from './components/Routes/PrivateRoute';
+import PublicRoute from './components/Routes/PublicRoute';
 import Layout from './components/Layout/Layout';
 import LoadingSpinner from './components/UI/Loading/LoadingSpinner';
 import Axios from 'axios';
