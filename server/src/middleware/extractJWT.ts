@@ -9,7 +9,7 @@ const NAMESPACE = "Auth";
 const extractJWT = (req: Request, res: Response, next: NextFunction) => {
   logging.info(NAMESPACE, "Validating token");
 
-  const token: string = req.headers["x-access-token"].toString();
+  const token: string | undefined = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
     res.status(401).json({ message: "No authentication token was provided!" });

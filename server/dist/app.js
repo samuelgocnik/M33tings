@@ -9,12 +9,11 @@ const logging_1 = __importDefault(require("./config/logging"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const sample_1 = __importDefault(require("./routes/sample"));
+const user_1 = __importDefault(require("./routes/user"));
 const NAMESPACE = "Server";
 const port = config_1.default.server.port;
 const host = config_1.default.server.hostname;
 const origin = config_1.default.origin;
-const salt_rounds = config_1.default.salt_rounds;
-const jwt_secret = config_1.default.jwt_secret;
 const app = (0, express_1.default)();
 /** Logging the request */
 app.use((req, res, next) => {
@@ -41,6 +40,7 @@ app.use((_req, res, next) => {
 });
 /** Routes */
 app.use("/sample", sample_1.default);
+app.use("/users", user_1.default);
 /** Error handling */
 app.use((_req, res, _next) => {
     const err = new Error("not found");
@@ -90,15 +90,6 @@ app.listen(port, host, () => {
 //     },
 //   })
 // );
-// // export default app;
-// const db = new Pool({
-//   user: "postgres",
-//   password: "postgres",
-//   host: "localhost",
-//   database: "m33tings-web",
-//   port: 5432,
-//   connectionTimeoutMillis: 2000,
-// });
 // // verifying if provided token is valid
 // const verifyJWT = (req: Request, res: Response, next) => {
 //   const token: string = req.headers["x-access-token"].toString();

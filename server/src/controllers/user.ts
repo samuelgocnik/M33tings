@@ -1,66 +1,149 @@
 import { Request, Response, NextFunction } from "express";
 import logging from "../config/logging";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcrypt";
 import config from "../config/config";
+import pool from "../config/postgresql";
+import signJWT from "../functions/signJWT";
+import { IUser } from "../interfaces/user";
+import { QueryResult } from "pg";
 
 const NAMESPACE = "User";
 
-const validateToken = (req: Request, res: Response, next: NextFunction) => {
+const validateToken = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Validate token");
   return res.json({
     message: "Authorized",
   });
 };
 
-const register = (req: Request, res: Response, next: NextFunction) => {
-  logging.info(NAMESPACE, "");
+// Register user. Inser user's name and hashed password to database and handle errors.
+const register = (req: Request, res: Response) => {
+  logging.info(NAMESPACE, "Register user");
+
+  if (!req.body.username || !req.body.pwd) {
+    res.status(501).json({ message: "Invalid body provided" });
+    return;
+  }
 
   const { username, pwd } = req.body;
 
   if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-    res.json({ message: "Invalid username or password" });
+    res.status(400).json({ message: "Invalid username or password" });
     return;
   }
 
+  logging.info(NAMESPACE, `kokot ${username} ${pwd}`);
+
   const saltRounds = Number(config.server.saltRounds);
-  bcrypt.hash(pwd, saltRounds, (hashError, hash) => {
+  bcryptjs.hash(pwd, saltRounds, (hashError, hash) => {
     if (hashError) {
-      res.status(500).json(hashError);
+      res.status(500).json({ error: hashError, message: hashError.message });
       return;
     }
 
-    // db.query(
-    //   "INSERT INTO users (name, pwd) " +
-    //     "SELECT $1, $2 " +
-    //     "FROM users " +
-    //     "WHERE NOT EXISTS( " +
-    //     "SELECT id " +
-    //     "FROM users " +
-    //     "WHERE name = $1 " +
-    //     ") " +
-    //     "LIMIT 1",
-    //   [username, hash],
-    //   (error, result) => {
-    //     if (error) {
-    //       res.status(500).json(error);
-    //       return;
-    //     }
-    //     if (result.rowCount == 0) {
-    //       res.json({ message: "User already exists!", result: result });
-    //     } else {
-    //       res.json(result);
-    //     }
-    //   }
-    // );
+    pool.query(
+      "INSERT INTO users (name, pwd) " +
+        `SELECT $1, $2 ` +
+        "FROM users " +
+        "WHERE NOT EXISTS( " +
+        "SELECT id " +
+        "FROM users " +
+        `WHERE name = $1 ` +
+        ") " +
+        "LIMIT 1",
+      [username, hash],
+      (error: Error, result: QueryResult<any>) => {
+        if (error) {
+          res.status(500).json({ message: error.message, error });
+        } else if (result.rowCount == 0) {
+          res.json({ message: "User already exists!", result });
+        } else {
+          res.json(result);
+        }
+      }
+    );
   });
 };
 
-const login = (req: Request, res: Response, next: NextFunction) => {
-  logging.info(NAMESPACE, "");
+// Login user and his sign json web token, which will be returned and stored in local storage.
+const login = (req: Request, res: Response) => {
+  logging.info(NAMESPACE, "Login user");
+
+  if (!req.body.username || !req.body.pwd) {
+    res.status(501).json({ message: "Invalid body provided" });
+    return;
+  }
+
+  const { username, pwd } = req.body;
+
+  pool.query(
+    `SELECT * FROM users WHERE name = $1`,
+    [username],
+    (error: Error, result: QueryResult<any>) => {
+      if (error) {
+        res.status(500).json({ message: error.message, error });
+      } else if (result.rowCount > 0) {
+        bcryptjs.compare(pwd, result.rows[0].pwd, (err, same) => {
+          if (err) {
+            res.status(501).json({ message: err.message, error: err });
+          } else if (same) {
+            const user: IUser = {
+              _id: result.rows[0].id,
+              name: result.rows[0].name,
+              pwd: result.rows[0].pwd,
+              picture: result.rows[0].picture,
+            };
+            // create token
+            signJWT(user, (error, token) => {
+              if (error) {
+                logging.info(NAMESPACE, "unable to sign jwt");
+
+                res.status(401).json({
+                  message: "Unable to sign JWT",
+                  error,
+                });
+              } else if (token) {
+                res.json({
+                  auth: true,
+                  token: token,
+                  message: "Auth successful",
+                  result: user,
+                });
+              }
+            });
+          } else {
+            res.json({
+              auth: false,
+              token: null,
+              message: "Password mismatch!",
+              result: null,
+            });
+          }
+        });
+      } else {
+        res.json({ message: "User doesn't exist!" });
+      }
+    }
+  );
 };
 
-const getAllUsers = (req: Request, res: Response, next: NextFunction) => {
-  logging.info(NAMESPACE, "");
+// Retrieve user's identity according to his id extracted from json web token and stored in locals.
+const getIdentity = (req: Request, res: Response) => {
+  logging.info(NAMESPACE, "Login user based on token");
+
+  pool.query(
+    "SELECT * FROM users WHERE id = $1",
+    [res.locals.userId],
+    (error: Error, result: QueryResult<any>) => {
+      if (error) {
+        res.status(500).json({ message: error.message, error });
+      } else if (result.rowCount == 0) {
+        res.json({ message: "User doesn't exists!", result });
+      } else {
+        res.json(result.rows[0]);
+      }
+    }
+  );
 };
 
-export default { validateToken, register, login, getAllUsers };
+export default { validateToken, register, login, getIdentity };

@@ -1,15 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import config from "./config/config";
 import logging from "./config/logging";
-import http from "http";
 
-import { Pool } from "pg";
 import cors from "cors";
-import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import session from "express-session";
-import jwt from "jsonwebtoken";
 import sampleRoutes from "./routes/sample";
 import userRouter from "./routes/user";
 
@@ -61,7 +55,7 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 
 /** Routes */
 app.use("/sample", sampleRoutes);
-app.use("/auth", userRouter);
+app.use("/users", userRouter);
 
 /** Error handling */
 app.use((_req: Request, res: Response, _next: NextFunction) => {
@@ -72,7 +66,6 @@ app.use((_req: Request, res: Response, _next: NextFunction) => {
 });
 
 /** Create the server */
-
 app.listen(port, host, () => {
   logging.info(NAMESPACE, `Express is listening at http://${host}:${port}`);
 });
@@ -120,16 +113,6 @@ app.listen(port, host, () => {
 //   })
 // );
 
-// // export default app;
-
-// const db = new Pool({
-//   user: "postgres",
-//   password: "postgres",
-//   host: "localhost",
-//   database: "m33tings-web",
-//   port: 5432,
-//   connectionTimeoutMillis: 2000,
-// });
 
 // // verifying if provided token is valid
 // const verifyJWT = (req: Request, res: Response, next) => {
