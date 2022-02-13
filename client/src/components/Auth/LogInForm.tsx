@@ -50,7 +50,7 @@ function LogIn() {
     try {
       setError('');
       setIsLoading(true);
-      await Axios.post(`${API_URL}auth/login`, {
+      await Axios.post(`${API_URL}users/login`, {
         username: name,
         pwd: password,
       }).then(
@@ -66,7 +66,7 @@ function LogIn() {
             throw new Error(res.data.message);
           }
           localStorage.setItem('token', res.data.token || 'Invalid token');
-          dispatch(login({ user: res.data.result }));
+          dispatch(login({ user: res.data.result, token: res.data.token }));
         }
       );
       setIsLoading(false);

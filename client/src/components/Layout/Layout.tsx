@@ -6,7 +6,7 @@ import classes from './Layout.module.css';
 import MainNavigation from './MainNavigation';
 
 const Layout = (props: { children: any }) => {
-  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
+  const loggedIn: boolean = !!useAppSelector((state) => state.auth.token);
 
   return (
     <Fragment>

@@ -15,6 +15,7 @@ Axios.defaults.headers.post['Content-Type'] = 'application/json';
 Axios.defaults.headers.post['Access-Control-Allow-Origin'] =
   API_URL;
 
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

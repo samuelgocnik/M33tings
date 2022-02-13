@@ -3,7 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const PublicRoute = ({ component: Component, ...rest }) => {
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
+  const loggedIn = !!useSelector((state) => state.auth.token);
 
   return (
     <Route

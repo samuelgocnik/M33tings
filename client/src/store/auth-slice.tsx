@@ -4,17 +4,18 @@ import { IUserCookie } from '../models/User';
 
 type RootState = IUserCookie;
 
-const initialAuthState: IUserCookie = { loggedIn: false, user: null };
+const initialAuthState: IUserCookie = { token: null, user: null };
 const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
   reducers: {
     login(state, action) {
-      state.loggedIn = true;
+      console.log("login->", action.payload);
+      state.token = action.payload.token;
       state.user = action.payload.user;
     },
     logout(state) {
-      state.loggedIn = false;
+      state.token = null;
       state.user = null;
       localStorage.removeItem('token');
     },

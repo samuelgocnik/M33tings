@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import PublicRoute from './components/Routes/PublicRoute';
@@ -7,7 +7,8 @@ import LoadingSpinner from './components/UI/Loading/LoadingSpinner';
 import Axios from 'axios';
 import { authActions } from './store/auth-slice';
 import { useAppDispatch } from './hooks/use-dispatch';
-import API_URL from './utils/config';
+import { useAppSelector } from './hooks/use-selector';
+import { initializeUser } from './store/auth-actions';
 
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const SignupPage = React.lazy(() => import('./pages/SignupPage'));
@@ -16,26 +17,15 @@ const MeetingsPage = React.lazy(() => import('./pages/MeetingsPage'));
 const NewMeetingPage = React.lazy(() => import('./pages/NewMeetingPage'));
 
 function App() {
-  const { login } = authActions;
-  const dispatch = useAppDispatch();
 
-  const loginHandler = useCallback(async () => {
-    await Axios.get(`${API_URL}auth/login`)
-      .then((res) => {
-        console.log("kokot");
-        if (res.data.loggedIn) {
-          console.log("got user");
-          dispatch(login({ user: res.data.user }));
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [login, dispatch]);
+  const dispatch = useAppDispatch();
+  const token = useAppSelector(state => state.auth.token);
+  Axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
 
   useEffect(() => {
-    loginHandler();
-  }, [loginHandler]);
+    dispatch(initializeUser())
+    return () => { };
+  }, [dispatch]);
 
   return (
     <Layout>

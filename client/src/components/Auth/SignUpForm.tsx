@@ -44,7 +44,7 @@ function SignUpForm() {
     try {
       setError('');
       setIsLoading(true);
-      await Axios.post(`${API_URL}auth/register`, {
+      await Axios.post(`${API_URL}users/register`, {
         username: name,
         pwd: password,
       }).then((res) => {

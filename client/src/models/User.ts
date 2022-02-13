@@ -6,6 +6,6 @@ export interface IUser {
 }
 
 export interface IUserCookie {
-  loggedIn: boolean;
+  token: string | null;
   user: IUser | null;
 }

@@ -25,9 +25,7 @@ const MainNavigation = () => {
   async function logoutHandler() {
     try {
       setIsLoading(true);
-      await Axios.get(`${API_URL}auth/logout`).then((_) => {
-        dispatch(logout());
-      });
+      dispatch(logout());
       dispatch(setSuccessfulLogout({ value: true }));
       setIsLoading(false);
       history.push('/login');
