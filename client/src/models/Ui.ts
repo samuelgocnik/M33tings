@@ -1,9 +1,16 @@
 export interface INotification {
-  status: string;
+  type: UiTypes;
   title: string;
   message: string;
 }
 
 export interface IUiSlice {
-  notification: INotification | null;
+  notification: INotification;
+}
+
+export enum UiTypes {
+  Error,
+  Loading,
+  Success,
+  None,
 }

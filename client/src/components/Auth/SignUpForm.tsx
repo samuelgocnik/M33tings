@@ -1,70 +1,87 @@
-import Axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks/use-dispatch';
-import { messageActions } from '../../store/message-slice';
-import Button from '../UI/Button';
-import LoadingDots from '../UI/Loading/LoadingDots';
-import classes from './AuthForm.module.css';
-import API_URL from '../../utils/config';
-import Message from '../UI/Messages/Message';
-import Input from '../UI/Input/Input';
-import Card from '../UI/Card/Card';
+import React, { useEffect, useRef } from "react";
+import { useAppDispatch } from "../../hooks/use-dispatch";
+import Button from "../UI/Button";
+import LoadingDots from "../UI/Loading/LoadingDots";
+import classes from "./AuthForm.module.css";
+import Message from "../UI/Messages/Message";
+import Input from "../UI/Input/Input";
+import Card from "../UI/Card/Card";
+import { uiActions } from "../../store/ui-slice";
+import { UiTypes } from "../../models/Ui";
+import { registerUser } from "../../store/auth-actions";
+import { useAppSelector } from "../../hooks/use-selector";
 
-function SignUpForm() {
-  const history = useHistory();
-  const [error, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const SignUpForm = () => {
   const dispatch = useAppDispatch();
+
+  const { showNotification, setNoneNotification } = uiActions;
+  const notification = useAppSelector((state) => state.ui.notification);
+
   const nameInputRef = useRef<HTMLInputElement>();
   const passwordInputRef = useRef<HTMLInputElement>();
   const passwordConfirmationInputRef = useRef<HTMLInputElement>();
 
+  // on mount restore notification
   useEffect(() => {
-    dispatch(messageActions.setSuccessfulRegistration({ value: false }));
-    return () => { };
-  }, [dispatch]);
+    dispatch(setNoneNotification());
+  }, [dispatch, setNoneNotification]);
+
+  useEffect(() => {
+    return () => {
+      if (notification.type === UiTypes.Error) {
+        dispatch(setNoneNotification());
+      }
+    };
+  });
 
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
 
-    const name = nameInputRef.current?.value.trim() || '';
-    const password = passwordInputRef.current?.value.trim() || '';
+    const name = nameInputRef.current?.value.trim() || "";
+    const password = passwordInputRef.current?.value.trim() || "";
 
     if (name.length < 4 || name.length > 32) {
-      return setError('Enter a valid name');
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message: "Enter a valid name",
+        })
+      );
+      return;
     }
     if (password.length < 6) {
-      return setError('Enter a valid password');
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message: "Enter a valid password",
+        })
+      );
+      return;
     }
     if (password !== passwordConfirmationInputRef.current?.value) {
-      return setError('Passwords do not match');
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message: "Passwords do not match",
+        })
+      );
+      return;
     }
-
-    try {
-      setError('');
-      setIsLoading(true);
-      await Axios.post(`${API_URL}users/register`, {
-        username: name,
-        pwd: password,
-      }).then((res) => {
-        if (res.data.message) {
-          throw new Error(res.data.message);
-        }
-      });
-      dispatch(messageActions.setSuccessfulRegistration({ value: true }));
-      setIsLoading(false);
-      history.push('/login');
-    } catch (error) {
-      setIsLoading(false);
-      setError('Failed to sign up: ' + error);
-    }
+    dispatch(registerUser(name, password));
   }
 
   return (
-    <Card className={classes['auth-form']}>
-      <h1 className={classes['auth-form__heading']}>Sign Up</h1>
-      {error && <Message type="error" value={error} />}
+    <Card className={classes["auth-form"]}>
+      <h1 className={classes["auth-form__heading"]}>Sign Up</h1>
+      {notification.type === UiTypes.Error && (
+        <Message type="error" value={notification.message} />
+      )}
+      {notification.type === UiTypes.Success && (
+        <Message type="success" value={notification.message} />
+      )}
       <form onSubmit={submitHandler}>
         <Input
           ref={nameInputRef}
@@ -96,19 +113,19 @@ function SignUpForm() {
         />
 
         <div className={classes.actions}>
-          {!isLoading && (
+          {notification.type !== UiTypes.Loading && (
             <Button
               text="Create Account"
               type="submit"
-              className={classes['auth-form__submit']}
-              onClick={() => { }}
+              className={classes["auth-form__submit"]}
+              onClick={() => {}}
             />
           )}
-          {isLoading && <LoadingDots />}
+          {notification.type === UiTypes.Loading && <LoadingDots />}
         </div>
       </form>
     </Card>
   );
-}
+};
 
 export default SignUpForm;

@@ -20,19 +20,19 @@ const validateToken = (req: Request, res: Response) => {
 const register = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Register user");
 
-  if (!req.body.username || !req.body.pwd) {
-    res.status(501).json({ message: "Invalid body provided" });
+  if (!req.body.name || !req.body.pwd) {
+    res.json({ message: "Invalid body provided" });
     return;
   }
 
-  const { username, pwd } = req.body;
+  const { name, pwd } = req.body;
 
-  if (username.length < 4 || username.length > 32 || pwd.length < 6) {
-    res.status(400).json({ message: "Invalid username or password" });
+  if (name.length < 4 || name.length > 32 || pwd.length < 6) {
+    res.json({ message: "Invalid username or password" });
     return;
   }
 
-  logging.info(NAMESPACE, `kokot ${username} ${pwd}`);
+  logging.info(NAMESPACE, `kokot ${name} ${pwd}`);
 
   const saltRounds = Number(config.server.saltRounds);
   bcryptjs.hash(pwd, saltRounds, (hashError, hash) => {
@@ -51,7 +51,7 @@ const register = (req: Request, res: Response) => {
         `WHERE name = $1 ` +
         ") " +
         "LIMIT 1",
-      [username, hash],
+      [name, hash],
       (error: Error, result: QueryResult<any>) => {
         if (error) {
           res.status(500).json({ message: error.message, error });
@@ -69,16 +69,16 @@ const register = (req: Request, res: Response) => {
 const login = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Login user");
 
-  if (!req.body.username || !req.body.pwd) {
+  if (!req.body.name || !req.body.pwd) {
     res.status(501).json({ message: "Invalid body provided" });
     return;
   }
 
-  const { username, pwd } = req.body;
+  const { name, pwd } = req.body;
 
   pool.query(
     `SELECT * FROM users WHERE name = $1`,
-    [username],
+    [name],
     (error: Error, result: QueryResult<any>) => {
       if (error) {
         res.status(500).json({ message: error.message, error });

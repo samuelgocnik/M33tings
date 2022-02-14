@@ -1,91 +1,79 @@
-import Axios from 'axios';
-import React, { useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks/use-dispatch';
-import { useAppSelector } from '../../hooks/use-selector';
-import { IUser } from '../../models/User';
-import { authActions } from '../../store/auth-slice';
-import { messageActions } from '../../store/message-slice';
-import API_URL from '../../utils/config';
-import Button from '../UI/Button';
-import Card from '../UI/Card/Card';
-import Input from '../UI/Input/Input';
-import LoadingDots from '../UI/Loading/LoadingDots';
-import Message from '../UI/Messages/Message';
-import classes from './AuthForm.module.css';
+import React, { useEffect, useRef } from "react";
+import { useAppDispatch } from "../../hooks/use-dispatch";
+import { useAppSelector } from "../../hooks/use-selector";
+import { UiTypes } from "../../models/Ui";
+import { loginUser } from "../../store/auth-actions";
+import { messageActions } from "../../store/message-slice";
+import { uiActions } from "../../store/ui-slice";
+import Button from "../UI/Button";
+import Card from "../UI/Card/Card";
+import Input from "../UI/Input/Input";
+import LoadingDots from "../UI/Loading/LoadingDots";
+import Message from "../UI/Messages/Message";
+import classes from "./AuthForm.module.css";
 
 function LogIn() {
-  const history = useHistory();
-  const { login } = authActions;
-  const [error, setError] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+
+  const { showNotification, setNoneNotification } = uiActions;
+  const notification = useAppSelector((state) => state.ui.notification);
 
   const nameInputRef = useRef<HTMLInputElement>();
   const passwordInputRef = useRef<HTMLInputElement>();
 
-  const successfulRegistration: boolean = useAppSelector(
-    (state) => state.message.successfulRegistration
-  );
+  useEffect(() => {
+    if (notification.type === UiTypes.Error) {
+      setNoneNotification();
+    }
+  }, []);
 
-  const successfulLogout: boolean = useAppSelector(
-    (state) => state.message.successfulLogout
-  );
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(setNoneNotification());
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [dispatch, setNoneNotification, notification]);
 
+  //submit login form
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
 
     dispatch(messageActions.setSuccessfulLogout({ value: false }));
 
-    const name: string = nameInputRef.current?.value.trim() || '';
-    const password: string = passwordInputRef.current?.value.trim() || '';
+    const name: string = nameInputRef.current?.value.trim() || "";
+    const password: string = passwordInputRef.current?.value.trim() || "";
 
     if (name.length < 4 || name.length > 32) {
-      return setError('Enter a valid name');
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message: "Enter a valid name",
+        })
+      );
+      return;
     }
     if (password.length < 6) {
-      return setError('Enter a valid password');
-    }
-
-    try {
-      setError('');
-      setIsLoading(true);
-      await Axios.post(`${API_URL}users/login`, {
-        username: name,
-        pwd: password,
-      }).then(
-        (res: {
-          data: {
-            auth: boolean;
-            token: string | null;
-            message: string | null;
-            result: IUser | null;
-          };
-        }) => {
-          if (!res.data.auth && res.data.message) {
-            throw new Error(res.data.message);
-          }
-          localStorage.setItem('token', res.data.token || 'Invalid token');
-          dispatch(login({ user: res.data.result, token: res.data.token }));
-        }
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message: "Enter a valid password",
+        })
       );
-      setIsLoading(false);
-      history.push('/meetings');
-    } catch (error) {
-      setIsLoading(false);
-      setError('Failed to log in: ' + error);
+      return;
     }
+    dispatch(loginUser(name, password));
   }
 
   return (
-    <Card className={classes['auth-form']}>
-      <h1 className={classes['auth-form__heading']}>Log In</h1>
-      {error && <Message type="error" value={error} />}
-      {successfulLogout && (
-        <Message type="success" value="Successfully log out" />
+    <Card className={classes["auth-form"]}>
+      <h1 className={classes["auth-form__heading"]}>Log In</h1>
+      {notification.type === UiTypes.Error && (
+        <Message type="error" value={notification.message} />
       )}
-      {successfulRegistration && (
-        <Message type="success" value="Successfully registered" />
+      {notification.type === UiTypes.Success && (
+        <Message type="success" value={notification.message} />
       )}
       <form onSubmit={submitHandler}>
         <Input
@@ -109,15 +97,15 @@ function LogIn() {
         />
 
         <div className={classes.actions}>
-          {!isLoading && (
+          {notification.type !== UiTypes.Loading && (
             <Button
               text="Login"
               type="submit"
-              className={classes['auth-form__submit']}
-              onClick={() => { }}
+              className={classes["auth-form__submit"]}
+              onClick={() => {}}
             />
           )}
-          {isLoading && <LoadingDots />}
+          {notification.type === UiTypes.Loading && <LoadingDots />}
         </div>
       </form>
     </Card>
