@@ -28,18 +28,19 @@ entity Event {
 entity EventAddress {
     * id : number <<generated>>
     --
-    *event_id : number <<FK>>
-    *street : text
-    *street_number: text
-    *city : text
-    *country : text
-    *created_at : timestamp
+    * event_id : number <<FK>>
+    * street : text
+    * street_number: text
+    * city : text
+    * country : text
+    * created_at : timestamp
 }
 
 entity EventDate {
     * id : number <<generated>>
     --
-    * date : datetime
+    * event_id : number <<FK>>
+    * proceedings_time : datetime
     * created_at : timestamp
 }
 
