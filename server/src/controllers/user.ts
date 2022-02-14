@@ -21,7 +21,7 @@ const register = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Register user");
 
   if (!req.body.name || !req.body.pwd) {
-    res.json({ message: "Invalid body provided" });
+    res.json({ message: "Invalid user's body data" });
     return;
   }
 
@@ -55,7 +55,7 @@ const register = (req: Request, res: Response) => {
       (error: Error, result: QueryResult<any>) => {
         if (error) {
           res.status(500).json({ message: error.message, error });
-        } else if (result.rowCount == 0) {
+        } else if (result && result.rowCount == 0) {
           res.json({ message: "User already exists!", result });
         } else {
           res.json(result);
@@ -70,7 +70,7 @@ const login = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Login user");
 
   if (!req.body.name || !req.body.pwd) {
-    res.status(501).json({ message: "Invalid body provided" });
+    res.status(501).json({ message: "Invalid user's body data" });
     return;
   }
 

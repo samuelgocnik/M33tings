@@ -5,7 +5,8 @@ import logging from "./config/logging";
 import cors from "cors";
 import bodyParser from "body-parser";
 import sampleRoutes from "./routes/sample";
-import userRouter from "./routes/user";
+import usersRouter from "./routes/user";
+import eventsRouter from "./routes/event";
 
 const NAMESPACE = "Server";
 const port: number = config.server.port as number;
@@ -55,7 +56,8 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 
 /** Routes */
 app.use("/sample", sampleRoutes);
-app.use("/users", userRouter);
+app.use("/users", usersRouter);
+app.use("/events", eventsRouter);
 
 /** Error handling */
 app.use((_req: Request, res: Response, _next: NextFunction) => {
@@ -112,7 +114,6 @@ app.listen(port, host, () => {
 //     },
 //   })
 // );
-
 
 // // verifying if provided token is valid
 // const verifyJWT = (req: Request, res: Response, next) => {

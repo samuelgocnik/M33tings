@@ -2,11 +2,11 @@ import express from "express";
 import extractJWT from "../middleware/extractJWT";
 import controller from "./../controllers/user";
 
-const userRouter = express.Router();
+const usersRouter = express.Router();
 
-userRouter.get("/validate", extractJWT, controller.validateToken);
-userRouter.post("/register", controller.register);
-userRouter.post("/login", controller.login);
-userRouter.get("/login", extractJWT, controller.getIdentity);
+usersRouter.get("/validate", extractJWT, controller.validateToken);
+usersRouter.post("/register", controller.register);
+usersRouter.post("/login", controller.login);
+usersRouter.get("/login", extractJWT, controller.getIdentity);
 
-export = userRouter;
+export = usersRouter;
