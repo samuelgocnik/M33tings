@@ -4,7 +4,7 @@ import controller from "../controllers/event";
 
 const eventsRouter = express.Router();
 
-eventsRouter.get("/", extractJWT, controller.getEvents);
+eventsRouter.get("/", controller.getEvents);
 eventsRouter.post("/", controller.createEvent);
 
 export = eventsRouter;
