@@ -10,7 +10,7 @@ const getEvents = (_req: Request, res: Response) => {
   logging.info(NAMESPACE, "Getting all events");
 
   pool.query(
-    "SELECT event.id as id, event.name, note, ed.proceedings_time, all_participants, row_to_json(ea) AS address, event.created_at FROM event " +
+    "SELECT event.id as id, event.name, users.name AS creator, note, ed.proceedings_time, all_participants, row_to_json(ea) AS address, event.created_at FROM event " +
       // include participants
       "LEFT JOIN ( " +
       "SELECT par.event_id as id, array_agg(json_build_object('name', u.name, 'going' ,par.going)) AS all_participants " +
@@ -18,6 +18,8 @@ const getEvents = (_req: Request, res: Response) => {
       "JOIN users u ON u.id = par.user_id " +
       "GROUP BY par.event_id " +
       ") u USING (id) " +
+      // include creator name
+      "INNER JOIN users ON users.id = event.creator_id " +
       // include date
       "INNER JOIN event_date ed ON ed.event_id = event.id AND ed.id = (SELECT MAX(id) from event_date WHERE event_date.event_id = event.id) " +
       // include address
