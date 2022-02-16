@@ -12,7 +12,7 @@ const extractJWT = (req: Request, res: Response, next: NextFunction) => {
   const token: string | undefined = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({ message: "No authentication token was provided!" });
+    res.status(401).json({ message: "Authentication token was not provided!" });
     return;
   }
   jwt.verify(token, config.server.token.secret, (error, decoded) => {
