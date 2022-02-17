@@ -32,7 +32,7 @@ const EventListItem = (props: IEvent) => {
             <img src={PointingRightFinger} alt="Right pointing finger icon" />
           </div>
           <div className={classes["event__summary"]}>
-            <p>{parseDate(props.proceedings_time)}</p>
+            <p>{parseDate(props.proceedingsTime)}</p>
             {props.address && (
               <p>
                 {props.address?.street +
@@ -53,7 +53,7 @@ const EventListItem = (props: IEvent) => {
               className={classes["event__join"]}
               onClick={goingHandler}
             />
-            {props.all_participants
+            {props.allParticipants
               .filter((x) => x.going)
               .map((x) => (
                 <span>{x}</span>
@@ -66,7 +66,7 @@ const EventListItem = (props: IEvent) => {
               className={classes["event__join"]}
               onClick={interestedHandler}
             />
-            {props.all_participants
+            {props.allParticipants
               .filter((x) => !x.going)
               .map((x) => (
                 <span>{x}</span>
@@ -77,7 +77,7 @@ const EventListItem = (props: IEvent) => {
       <div className={classes["event__created"]}>
         <span>
           {"Created " +
-            parseDate(props.created_at) +
+            parseDate(props.createdAt) +
             " by '" +
             props.creator +
             "'"}

@@ -3,24 +3,42 @@ export interface IEvent {
   name: string;
   note: string | null;
   creator: string;
-  all_participants: IEventParticipant[];
+  allParticipants: IEventParticipant[];
   address: IEventAddress | null;
-  proceedings_time: Date;
-  created_at: Date;
+  proceedingsTime: Date;
+  createdAt: Date;
 }
 
 export interface IEventAddress {
   id: number;
-  event_id: number;
+  eventId: number;
   street: string;
-  street_number: string;
+  streetNumber: string;
   city: string;
   country: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface IEventParticipant {
   id: number;
   name: string;
   going: boolean;
+}
+
+export interface IEventStore {
+  events: IEvent[];
+}
+
+export interface IEventPostData {
+  name: string;
+  note: string | null;
+  date: string;
+  address: IEventAddressPostData | null;
+}
+
+export interface IEventAddressPostData {
+  street: string;
+  streetNumber: string;
+  city: string;
+  country: string;
 }

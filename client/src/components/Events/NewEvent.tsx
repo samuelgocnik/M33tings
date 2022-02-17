@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
 import { useAppDispatch } from "../../hooks/use-dispatch";
 import { useAppSelector } from "../../hooks/use-selector";
 import { UiTypes } from "../../models/Ui";
+import { createEvent } from "../../store/event-actions";
 import { uiActions } from "../../store/ui-slice";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
@@ -18,19 +19,21 @@ import classes from "./NewEvent.module.css";
 
 const NewEvent = () => {
   const dispatch = useAppDispatch();
-  const { showNotification } = uiActions;
+  const { showNotification, setNoneNotification } = uiActions;
   const notification = useAppSelector((state) => state.ui.notification);
   const current_date = new Date();
   const nameInputRef = useRef<HTMLInputElement>(null);
   const noteInputRef = useRef<HTMLInputElement>(null);
+  const streetInputRef = useRef<HTMLInputElement>(null);
+  const streetNumberInputRef = useRef<HTMLInputElement>(null);
+  const cityInputRef = useRef<HTMLInputElement>(null);
+  const countryInputRef = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState<Date>(current_date);
   const [includeAddress, setIncludeAddress] = useState<boolean>(false);
 
-  // const dateOnChangeHandler = (event: {
-  //   target: { value: React.SetStateAction<Date> };
-  // }) => {
-  //   setDate(event.target.value);
-  // };
+  useEffect(() => {
+    dispatch(setNoneNotification());
+  }, []);
 
   const includeAddressHandler = () => {
     setIncludeAddress((prev) => {
@@ -43,6 +46,20 @@ const NewEvent = () => {
 
     const name: string = nameInputRef.current?.value.trim() || "";
     const note: string = noteInputRef.current?.value.trim() || "";
+    const street: string = streetInputRef.current?.value.trim() || "";
+    const streetNumber: string =
+      streetNumberInputRef.current?.value.trim() || "";
+    const city: string = cityInputRef.current?.value.trim() || "";
+    const country: string = countryInputRef.current?.value.trim() || "";
+    console.log(
+      name,
+      note,
+      date.toISOString(),
+      street,
+      streetNumber,
+      city,
+      country
+    );
 
     if (name.length < 4) {
       return dispatch(
@@ -53,7 +70,30 @@ const NewEvent = () => {
         })
       );
     }
-
+    if (includeAddress && (!street || !streetNumber || !city || !country)) {
+      return dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: "Error",
+          message:
+            "Enter a valid address data, otherwise don't include address",
+        })
+      );
+    }
+    if (includeAddress) {
+      dispatch(
+        createEvent({
+          name,
+          note,
+          date: date.toISOString(),
+          address: { street, streetNumber, city, country },
+        })
+      );
+    } else {
+      dispatch(
+        createEvent({ name, note, date: date.toISOString(), address: null })
+      );
+    }
     console.log(name, note, date);
   };
 
@@ -70,10 +110,10 @@ const NewEvent = () => {
           label="Name of the event"
           type="text"
           error_message="Enter a valid event name (at least 4 chars long)"
-          validate={(data: string): boolean => data.trim().length > 4}
+          validate={(data: string): boolean => data.trim().length > 3}
         />
         <Input
-          ref={nameInputRef}
+          ref={noteInputRef}
           id="note"
           label="Note"
           type="text"
@@ -111,35 +151,35 @@ const NewEvent = () => {
         {includeAddress && (
           <div className={classes["new-event-form__address"]}>
             <Input
-              ref={nameInputRef}
+              ref={streetInputRef}
               id="street"
               label="Street"
               type="text"
-              error_message="Enter a valid street"
+              error_message="Enter a valid street (at least 3 chars long)"
               validate={(data: string): boolean => data.trim().length > 2}
             />
             <Input
-              ref={nameInputRef}
+              ref={streetNumberInputRef}
               id="street_number"
               label="Street number"
               type="text"
-              error_message="Enter a valid street number"
+              error_message="Enter a valid street number (at least 2 chars long)"
               validate={(data: string): boolean => data.trim().length > 1}
             />
             <Input
-              ref={nameInputRef}
+              ref={cityInputRef}
               id="city"
               label="City"
               type="text"
-              error_message="Enter a valid city"
+              error_message="Enter a valid city (at least 3 chars long)"
               validate={(data: string): boolean => data.trim().length > 2}
             />
             <Input
-              ref={nameInputRef}
+              ref={countryInputRef}
               id="country"
               label="Country"
               type="text"
-              error_message="Enter a valid country"
+              error_message="Enter a valid country (at least 3 chars long)"
               validate={(data: string): boolean => data.trim().length > 2}
             />
           </div>

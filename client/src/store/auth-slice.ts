@@ -4,7 +4,7 @@ import { IUserCookie } from '../models/User';
 
 type RootState = IUserCookie;
 
-const initialAuthState: IUserCookie = { token: "3232", user: null };
+const initialAuthState: IUserCookie = { token: null, user: null };
 const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
