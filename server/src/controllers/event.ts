@@ -2,7 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { QueryResult } from "pg";
 import logging from "../config/logging";
 import pool from "../config/postgresql";
-import { IEvent } from "../interfaces/event";
+import verifyEventCreator from "../functions/verifyEventCreator";
+import { IEvent, IEventAddress } from "../interfaces/event";
 
 const NAMESPACE = "Events";
 
@@ -10,7 +11,7 @@ const getEvents = (_req: Request, res: Response) => {
   logging.info(NAMESPACE, "Getting all events");
 
   pool.query(
-    "SELECT event.id as id, event.name, users.name AS creator, note, ed.proceedings_time, all_participants, row_to_json(ea) AS address, event.created_at FROM event " +
+    "SELECT event.id, event.name, users.name AS creator, note, ed.proceedings_time, all_participants, row_to_json(ea) AS address, event.created_at FROM event " +
       // include participants
       "LEFT JOIN ( " +
       "SELECT par.event_id as id, array_agg(json_build_object('name', u.name, 'going' ,par.going)) AS all_participants " +
@@ -84,7 +85,7 @@ const createEvent = (req: Request, res: Response) => {
       "VALUES ((select event_insert.id from event_insert), $4)";
   }
 
-  pool.query(query, params, (error, result) => {
+  pool.query(query, params, (error: Error, result: QueryResult<any>) => {
     if (error) {
       res.status(500).json({ error, message: error.message });
     } else if (result && result.rowCount == 0) {
@@ -95,4 +96,71 @@ const createEvent = (req: Request, res: Response) => {
   });
 };
 
-export default { getEvents, createEvent };
+const createEventAddress = (req: Request, res: Response) => {
+  logging.info(NAMESPACE, "Creating event address");
+
+  if (
+    !req.body.event_id ||
+    !req.body.street ||
+    !req.body.street_number ||
+    !req.body.city ||
+    !req.body.country
+  ) {
+    res.json({ message: "Invalid event address data" });
+    return;
+  }
+
+  const { event_id, street, street_number, city, country } = req.body;
+
+  if (!verifyEventCreator(event_id, res.locals.userId)) {
+    res.status(401).json({ message: "You are not allowed to edit this event" });
+    return;
+  }
+
+  pool.query(
+    "INSERT INTO event_address (event_id, street, street_number, city, country) " +
+      "VALUES ($1, $2, $3, $4, $5)",
+    [event_id, street, street_number, city, country],
+    (error: Error, result: QueryResult<any>) => {
+      if (error) {
+        res.status(500).json({ error, message: error.message });
+      } else if (result && result.rowCount == 0) {
+        res.json({ message: "Could not create a new event address!" });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+};
+
+const createEventDate = (req: Request, res: Response) => {
+  logging.info(NAMESPACE, "Creating event address");
+
+  if (!req.body.event_id || !req.body.proceedings_time) {
+    res.json({ message: "Invalid event date data" });
+    return;
+  }
+
+  const { event_id, proceedings_time } = req.body;
+
+  if (!verifyEventCreator(event_id, res.locals.userId)) {
+    res.status(401).json({ message: "You are not allowed to edit this event" });
+    return;
+  }
+
+  pool.query(
+    "INSERT INTO event_date (event_id, proceedings_time) VALUES ($1, $2)",
+    [event_id, proceedings_time],
+    (error: Error, result: QueryResult<any>) => {
+      if (error) {
+        res.status(500).json({ error, message: error.message });
+      } else if (result && result.rowCount == 0) {
+        res.json({ message: "Could not create a new event date!" });
+      } else {
+        res.json(result);
+      }
+    }
+  );
+};
+
+export default { getEvents, createEvent, createEventAddress, createEventDate };

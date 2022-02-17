@@ -6,5 +6,7 @@ const eventsRouter = express.Router();
 
 eventsRouter.get("/", controller.getEvents);
 eventsRouter.post("/", controller.createEvent);
+eventsRouter.post("/address", controller.createEventAddress);
+eventsRouter.post("/date", controller.createEventDate);
 
 export = eventsRouter;
