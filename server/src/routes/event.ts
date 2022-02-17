@@ -4,9 +4,9 @@ import controller from "../controllers/event";
 
 const eventsRouter = express.Router();
 
-eventsRouter.get("/", controller.getEvents);
-eventsRouter.post("/", controller.createEvent);
-eventsRouter.post("/address", controller.createEventAddress);
-eventsRouter.post("/date", controller.createEventDate);
+eventsRouter.get("/", extractJWT, controller.getEvents);
+eventsRouter.post("/", extractJWT, controller.createEvent);
+eventsRouter.post("/address", extractJWT, controller.createEventAddress);
+eventsRouter.post("/date", extractJWT, controller.createEventDate);
 
 export = eventsRouter;

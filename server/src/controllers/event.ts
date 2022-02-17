@@ -42,7 +42,7 @@ const createEvent = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Creating event");
 
   const data: IEvent = req.body;
-  if (!data || !data.name || !data.note || !data.date) {
+  if (!data || !data.name || !data.date) {
     res.json({ message: "Invalid event data" });
     return;
   }
