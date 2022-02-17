@@ -5,7 +5,6 @@ import PublicRoute from './components/Routes/PublicRoute';
 import Layout from './components/Layout/Layout';
 import LoadingSpinner from './components/UI/Loading/LoadingSpinner';
 import Axios from 'axios';
-import { authActions } from './store/auth-slice';
 import { useAppDispatch } from './hooks/use-dispatch';
 import { useAppSelector } from './hooks/use-selector';
 import { initializeUser } from './store/auth-actions';

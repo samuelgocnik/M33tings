@@ -8,10 +8,10 @@ const EventList = () => {
   return (
     <>
       <div>
-        <EventListItem
+        {/* <EventListItem
           id={1}
           key={1}
-          datetime={new Date()}
+          proceedings_time={new Date()}
           name="first meeting ever"
           note={null}
           going={['Fero', 'Jozo', 'Ignac']}
@@ -37,7 +37,7 @@ const EventList = () => {
           }}
           created_at={new Date()}
           creator="Veducko"
-        />
+        /> */}
       </div>
       <div className={classes['new-event__link']}>
         <Link to="/new-meeting">Create a new Meeting</Link>

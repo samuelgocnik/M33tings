@@ -20,7 +20,7 @@
 }
 
 .new-event-form__submit {
-  width: 90%;
+  width: 75%;
   padding: var(--padding-medium) var(--padding-big);
   margin: var(--margin-big) auto;
 
@@ -36,10 +36,31 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-top: var(--margin-small);
+  margin-bottom: var(--margin-big);
 }
 
-.react-datetime-picker__wrapper {
+.new-event-form__address-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: var(--margin-small) auto var(--margin-big) auto;
+  padding: var(--padding-medium) var(--padding-big);
   border-radius: var(--border-radius-medium);
+  border: none;
+  background-color: var(--primary-lightest);
+  transition: var(--transition-short);
+}
+
+.new-event-form__address-button:hover,
+.new-event-form__address-button--active {
+  background-color: var(--secondary-light);
+}
+
+.new-event-form__address-button img {
+  margin: auto;
+  margin-left: var(--margin-medium);
+  height: 1.2rem;
 }
 
 @media only screen and (max-width: 1024px) {

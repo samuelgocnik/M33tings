@@ -10,7 +10,7 @@
     "axios": "^0.24.0",
     "react": "^17.0.1",
     "react-bem-helper": "^1.4.1",
-    "react-datetime-picker": "^3.4.3",
+    "react-datetime-picker": "^3.5.0",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.2.0",

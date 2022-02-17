@@ -5,8 +5,8 @@ export interface IEvent {
   creator: string;
   all_participants: IEventParticipant[];
   address: IEventAddress | null;
-  proceedings_time: string;
-  created_at: string;
+  proceedings_time: Date;
+  created_at: Date;
 }
 
 export interface IEventAddress {
@@ -20,6 +20,7 @@ export interface IEventAddress {
 }
 
 export interface IEventParticipant {
+  id: number;
   name: string;
   going: boolean;
 }
