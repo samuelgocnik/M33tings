@@ -3,7 +3,6 @@ import { useAppDispatch } from "../../hooks/use-dispatch";
 import { useAppSelector } from "../../hooks/use-selector";
 import { UiTypes } from "../../models/Ui";
 import { loginUser } from "../../store/auth-actions";
-import { messageActions } from "../../store/message-slice";
 import { uiActions } from "../../store/ui-slice";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
@@ -37,8 +36,6 @@ function LogIn() {
   //submit login form
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
-
-    dispatch(messageActions.setSuccessfulLogout({ value: false }));
 
     const name: string = nameInputRef.current?.value.trim() || "";
     const password: string = passwordInputRef.current?.value.trim() || "";

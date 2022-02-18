@@ -5,24 +5,20 @@ import PointingRightFinger from "./../../assets/icons/pointing-right-finger.svg"
 import { IEvent } from "../../models/Event";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
-
-const parseDate = (date: Date): string => {
-  return (
-    date.getDate().toString() +
-    "/" +
-    date.getMonth().toString() +
-    "/" +
-    date.getFullYear().toString() +
-    "  " +
-    date.getHours().toString() +
-    ":" +
-    date.getMinutes().toString()
-  );
-};
+import { format } from "date-fns";
 
 const EventListItem = (props: IEvent) => {
   const goingHandler = () => {};
   const interestedHandler = () => {};
+
+  const going = props.allParticipants.map((x) => {
+    return <span>{x.name}</span>;
+  });
+  const interested = props.allParticipants.map((x) => {
+    return <span>{x.name}</span>;
+  });
+
+  console.log(going, interested);
 
   return (
     <Card className={classes.event}>
@@ -32,14 +28,11 @@ const EventListItem = (props: IEvent) => {
             <img src={PointingRightFinger} alt="Right pointing finger icon" />
           </div>
           <div className={classes["event__summary"]}>
-            <p>{parseDate(props.proceedingsTime)}</p>
+            <p>{format(new Date(props.proceedingsTime), "dd/MM/yyyy H:mm")}</p>
+            <p>{props.name}</p>
             {props.address && (
               <p>
-                {props.address?.street +
-                  ", " +
-                  props.address?.city +
-                  ", " +
-                  props.address?.country}
+                {`${props.address?.street} ${props.address?.streetNumber}, ${props.address?.city}, ${props.address?.country}`}
               </p>
             )}
             {props.note && <p>{props.note}</p>}
@@ -53,11 +46,7 @@ const EventListItem = (props: IEvent) => {
               className={classes["event__join"]}
               onClick={goingHandler}
             />
-            {props.allParticipants
-              .filter((x) => x.going)
-              .map((x) => (
-                <span>{x}</span>
-              ))}
+            {going}
           </div>
           <div className={classes["participants"]}>
             <Button
@@ -66,21 +55,16 @@ const EventListItem = (props: IEvent) => {
               className={classes["event__join"]}
               onClick={interestedHandler}
             />
-            {props.allParticipants
-              .filter((x) => !x.going)
-              .map((x) => (
-                <span>{x}</span>
-              ))}
+            {interested}
           </div>
         </div>
       </div>
       <div className={classes["event__created"]}>
         <span>
-          {"Created " +
-            parseDate(props.createdAt) +
-            " by '" +
-            props.creator +
-            "'"}
+          {`Created ${format(
+            new Date(props.createdAt),
+            "dd/MM/yyyy H:mm"
+          )} by '${props.creator}'`}
         </span>
       </div>
     </Card>

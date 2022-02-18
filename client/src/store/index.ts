@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authSlice from './auth-slice';
-import messageSlice from './message-slice';
-import uiSlice from './ui-slice';
+import { configureStore } from "@reduxjs/toolkit";
+import authSlice from "./auth-slice";
+import eventSlice from "./event-slice";
+import uiSlice from "./ui-slice";
 
 const store = configureStore({
-  reducer: { message: messageSlice, auth: authSlice, ui: uiSlice },
+  reducer: { auth: authSlice, ui: uiSlice, events: eventSlice },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -5,8 +5,8 @@ export interface IEvent {
   creator: string;
   allParticipants: IEventParticipant[];
   address: IEventAddress | null;
-  proceedingsTime: Date;
-  createdAt: Date;
+  proceedingsTime: string;
+  createdAt: string;
 }
 
 export interface IEventAddress {

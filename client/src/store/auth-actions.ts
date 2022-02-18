@@ -4,6 +4,8 @@ import API_URL from "../utils/config";
 import { authActions } from "./auth-slice";
 import { uiActions } from "./ui-slice";
 
+const { showNotification } = uiActions;
+
 const retrieveToken = (): string | null => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -38,7 +40,6 @@ export const initializeUser = () => {
 
 export const loginUser = (name: string, pwd: string) => {
   return async (dispatch: any) => {
-    const { showNotification } = uiActions;
     dispatch(
       showNotification({
         type: UiTypes.Loading,
@@ -85,8 +86,6 @@ export const loginUser = (name: string, pwd: string) => {
 
 export const registerUser = (name: string, pwd: string) => {
   return async (dispatch: any) => {
-    const { showNotification } = uiActions;
-
     dispatch(
       showNotification({
         type: UiTypes.Loading,

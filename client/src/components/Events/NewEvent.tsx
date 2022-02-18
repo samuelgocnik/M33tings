@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import DateTimePicker from "react-datetime-picker";
 import { useAppDispatch } from "../../hooks/use-dispatch";
 import { useAppSelector } from "../../hooks/use-selector";
+import { IEventPostData } from "../../models/Event";
 import { UiTypes } from "../../models/Ui";
 import { createEvent } from "../../store/event-actions";
 import { uiActions } from "../../store/ui-slice";
@@ -10,7 +11,6 @@ import Card from "../UI/Card/Card";
 import Input from "../UI/Input/Input";
 import LoadingDots from "../UI/Loading/LoadingDots";
 import Message from "../UI/Messages/Message";
-import Cancel from "./../../assets/icons/cancel.svg";
 import Check from "./../../assets/icons/check.svg";
 
 import "./DateTimeSelector.css";
@@ -80,21 +80,16 @@ const NewEvent = () => {
         })
       );
     }
+    let newEventData: IEventPostData = {
+      name,
+      note,
+      date: date.toISOString(),
+      address: null,
+    };
     if (includeAddress) {
-      dispatch(
-        createEvent({
-          name,
-          note,
-          date: date.toISOString(),
-          address: { street, streetNumber, city, country },
-        })
-      );
-    } else {
-      dispatch(
-        createEvent({ name, note, date: date.toISOString(), address: null })
-      );
+      newEventData.address = { street, streetNumber, city, country };
     }
-    console.log(name, note, date);
+    dispatch(createEvent(newEventData));
   };
 
   return (
@@ -102,6 +97,9 @@ const NewEvent = () => {
       <h1 className={classes["new-event-form__heading"]}>Create a new event</h1>
       {notification.type === UiTypes.Error && (
         <Message type="error" value={notification.message} />
+      )}
+      {notification.type === UiTypes.Success && (
+        <Message type="success" value={notification.message} />
       )}
       <form onSubmit={submitFormHandler}>
         <Input
