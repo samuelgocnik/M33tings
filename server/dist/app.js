@@ -8,7 +8,6 @@ const config_1 = __importDefault(require("./config/config"));
 const logging_1 = __importDefault(require("./config/logging"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const sample_1 = __importDefault(require("./routes/sample"));
 const user_1 = __importDefault(require("./routes/user"));
 const event_1 = __importDefault(require("./routes/event"));
 const NAMESPACE = "Server";
@@ -40,7 +39,6 @@ app.use((_req, res, next) => {
     next();
 });
 /** Routes */
-app.use("/sample", sample_1.default);
 app.use("/users", user_1.default);
 app.use("/events", event_1.default);
 /** Error handling */

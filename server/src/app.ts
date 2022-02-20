@@ -4,7 +4,6 @@ import logging from "./config/logging";
 
 import cors from "cors";
 import bodyParser from "body-parser";
-import sampleRoutes from "./routes/sample";
 import usersRouter from "./routes/user";
 import eventsRouter from "./routes/event";
 
@@ -55,7 +54,6 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 });
 
 /** Routes */
-app.use("/sample", sampleRoutes);
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
 
