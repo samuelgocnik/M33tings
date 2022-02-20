@@ -7,6 +7,6 @@ const usersRouter = express.Router();
 usersRouter.get("/validate", extractJWT, controller.validateToken);
 usersRouter.post("/register", controller.register);
 usersRouter.post("/login", controller.login);
-usersRouter.get("/login", controller.getIdentity);
+usersRouter.get("/login", extractJWT, controller.getIdentity);
 
 export = usersRouter;

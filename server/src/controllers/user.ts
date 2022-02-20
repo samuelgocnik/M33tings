@@ -90,8 +90,8 @@ const login = (req: Request, res: Response) => {
             const user: IUser = {
               _id: result.rows[0].id,
               name: result.rows[0].name,
-              pwd: result.rows[0].pwd,
               picture: result.rows[0].picture,
+              created_at: result.rows[0].created_at,
             };
             // create token
             signJWT(user, (error, token) => {
@@ -107,7 +107,7 @@ const login = (req: Request, res: Response) => {
                   auth: true,
                   token: token,
                   message: "Auth successful",
-                  result: user,
+                  user,
                 });
               }
             });
@@ -116,7 +116,7 @@ const login = (req: Request, res: Response) => {
               auth: false,
               token: null,
               message: "Password mismatch!",
-              result: null,
+              user: null,
             });
           }
         });
@@ -140,7 +140,7 @@ const getIdentity = (req: Request, res: Response) => {
       } else if (result.rowCount == 0) {
         res.json({ message: "User doesn't exists!", result });
       } else {
-        res.json(result.rows[0]);
+        res.json({ user: result.rows[0] });
       }
     }
   );
