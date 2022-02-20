@@ -6,6 +6,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import usersRouter from "./routes/user";
 import eventsRouter from "./routes/event";
+import participantRouter from "./routes/participant";
 
 const NAMESPACE = "Server";
 const port: number = config.server.port as number;
@@ -56,6 +57,7 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 /** Routes */
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
+app.use("/participant", participantRouter);
 
 /** Error handling */
 app.use((_req: Request, res: Response, _next: NextFunction) => {

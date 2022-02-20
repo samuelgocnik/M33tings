@@ -164,4 +164,12 @@ const createEventDate = (req: Request, res: Response) => {
   );
 };
 
-export default { getEvents, createEvent, createEventAddress, createEventDate };
+const deleteEvent = (req: Request, res: Response) => {};
+
+export default {
+  getEvents,
+  createEvent,
+  createEventAddress,
+  createEventDate,
+  deleteEvent,
+};
