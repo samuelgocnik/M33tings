@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./EventListItem.module.css";
 import "./DateTimeSelector.css";
 import PointingRightFinger from "./../../assets/icons/pointing-right-finger.svg";
-import { IEvent } from "../../models/Event";
+import { IEvent, IEventParticipant } from "../../models/Event";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
 import { format } from "date-fns";
@@ -11,14 +11,16 @@ const EventListItem = (props: IEvent) => {
   const goingHandler = () => {};
   const interestedHandler = () => {};
 
-  const going = props.allParticipants.map((x) => {
-    return <span>{x.name}</span>;
-  });
-  const interested = props.allParticipants.map((x) => {
-    return <span>{x.name}</span>;
-  });
-
-  console.log(going, interested);
+  const going = props.allParticipants
+    ? props.allParticipants
+        .filter((x) => x.going)
+        .map((x: IEventParticipant) => <span key={x.id}>{x.name}</span>)
+    : [];
+  const interested = props.allParticipants
+    ? props.allParticipants
+        .filter((x) => !x.going)
+        .map((x: IEventParticipant) => <span key={x.id}>{x.name}</span>)
+    : [];
 
   return (
     <Card className={classes.event}>

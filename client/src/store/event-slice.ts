@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import { IEvent, IEventStore } from "../models/Event";
+import { IEventStore } from "../models/Event";
 
 type RootState = IEventStore;
 
-const initialEventState = { events: [] };
+const initialEventState: IEventStore = { events: [] };
 const eventSlice = createSlice({
   name: "auth",
   initialState: initialEventState,

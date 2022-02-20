@@ -51,15 +51,6 @@ const NewEvent = () => {
       streetNumberInputRef.current?.value.trim() || "";
     const city: string = cityInputRef.current?.value.trim() || "";
     const country: string = countryInputRef.current?.value.trim() || "";
-    console.log(
-      name,
-      note,
-      date.toISOString(),
-      street,
-      streetNumber,
-      city,
-      country
-    );
 
     if (name.length < 4) {
       return dispatch(

@@ -6,9 +6,9 @@ import { fetchEvents } from "../store/event-actions";
 const MeetingsPage = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log("fetching events")
+    console.log("fetching events");
     dispatch(fetchEvents());
-  }, []);
+  }, [dispatch]);
   return <EventList />;
 };
 
