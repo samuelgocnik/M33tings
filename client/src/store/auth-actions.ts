@@ -26,7 +26,10 @@ export const initializeUser = () => {
         headers: { Authorization: `Bearer ${initialToken}` },
       };
       await Axios.get(`${API_URL}users/login`, config).then((res) => {
-        if (res.data) {
+        if (res.data.message) {
+          dispatch(authActions.logout());
+          return;
+        } else if (res.data.user) {
           dispatch(
             authActions.login({ user: res.data.user, token: initialToken })
           );
@@ -61,7 +64,7 @@ export const loginUser = (name: string, pwd: string) => {
       }
       localStorage.setItem("token", res.data.token || "Invalid token");
       dispatch(
-        authActions.login({ user: res.data.result, token: res.data.token })
+        authActions.login({ user: res.data.user, token: res.data.token })
       );
       dispatch(
         showNotification({

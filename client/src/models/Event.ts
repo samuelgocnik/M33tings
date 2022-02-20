@@ -3,6 +3,7 @@ export interface IEvent {
   name: string;
   note: string | null;
   creator: string;
+  creatorId: number;
   allParticipants: IEventParticipant[];
   address: IEventAddress | null;
   proceedingsTime: string;

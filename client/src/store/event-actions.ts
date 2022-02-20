@@ -71,13 +71,13 @@ export const fetchEvents = () => {
         return;
       }
       dispatch(replaceEvents({ events: res.data.result }));
-      dispatch(
-        showNotification({
-          type: UiTypes.Success,
-          title: "Events fetch",
-          message: "Events successfully fetched",
-        })
-      );
+      // dispatch(
+      //   showNotification({
+      //     type: UiTypes.Success,
+      //     title: "Events fetch",
+      //     message: "Events successfully fetched",
+      //   })
+      // );
     } catch (error) {
       dispatch(
         showNotification({

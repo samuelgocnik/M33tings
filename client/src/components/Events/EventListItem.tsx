@@ -6,10 +6,20 @@ import { IEvent, IEventParticipant } from "../../models/Event";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
 import { format } from "date-fns";
+import Edit from "./../../assets/icons/edit.svg";
+import Delete from "./../../assets/icons/trash.svg";
+import { useAppSelector } from "../../hooks/use-selector";
 
 const EventListItem = (props: IEvent) => {
+  const userId: number = useAppSelector((state) => state.auth.user?.id) || 0;
+
+  console.log(userId, props.creatorId)
   const goingHandler = () => {};
   const interestedHandler = () => {};
+
+  const deleteEventHandler = () => {};
+
+  const editEventHandler = () => {};
 
   const going = props.allParticipants
     ? props.allParticipants
@@ -68,6 +78,22 @@ const EventListItem = (props: IEvent) => {
             "dd/MM/yyyy H:mm"
           )} by '${props.creator}'`}
         </span>
+        {userId === props.creatorId && (
+          <div>
+            <button
+              onClick={editEventHandler}
+              className={classes["event__action"]}
+            >
+              <img src={Edit} alt="edit icon" />
+            </button>
+            <button
+              onClick={deleteEventHandler}
+              className={classes["event__action"]}
+            >
+              <img src={Delete} alt="delete icon" />
+            </button>
+          </div>
+        )}
       </div>
     </Card>
   );
