@@ -26,7 +26,7 @@ const getEvents = (_req: Request, res: Response) => {
       // include address
       "LEFT JOIN event_address ea ON EA.event_id = event.id AND ea.id = (SELECT MAX(id) from event_address WHERE event_address.event_id = event.id) " +
       // order
-      "ORDER BY ed.proceedings_time",
+      "WHERE ed.proceedings_time > now() ORDER BY ed.proceedings_time ",
 
     (error: Error, result: QueryResult<any>) => {
       if (error) {
