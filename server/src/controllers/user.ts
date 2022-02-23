@@ -21,14 +21,14 @@ const register = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Register user");
 
   if (!req.body.name || !req.body.pwd) {
-    res.json({ message: "Invalid user's body data" });
+    res.status(400).json({ message: "Invalid user's body data" });
     return;
   }
 
   const { name, pwd } = req.body;
 
   if (name.length < 4 || name.length > 32 || pwd.length < 6) {
-    res.json({ message: "Invalid username or password" });
+    res.status(400).json({ message: "Invalid username or password" });
     return;
   }
 
@@ -56,7 +56,7 @@ const register = (req: Request, res: Response) => {
         if (error) {
           res.status(500).json({ message: error.message, error });
         } else if (result && result.rowCount == 0) {
-          res.json({ message: "User already exists!", result });
+          res.status(400).json({ message: "User already exists!", result });
         } else {
           res.json(result);
         }
@@ -70,7 +70,7 @@ const login = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Login user");
 
   if (!req.body.name || !req.body.pwd) {
-    res.status(501).json({ message: "Invalid user's body data" });
+    res.status(400).json({ message: "Invalid user's body data" });
     return;
   }
 
@@ -85,7 +85,7 @@ const login = (req: Request, res: Response) => {
       } else if (result.rowCount > 0) {
         bcryptjs.compare(pwd, result.rows[0].pwd, (err, same) => {
           if (err) {
-            res.status(501).json({ message: err.message, error: err });
+            res.status(500).json({ message: err.message, error: err });
           } else if (same) {
             const user: IUser = {
               _id: result.rows[0].id,
@@ -98,13 +98,12 @@ const login = (req: Request, res: Response) => {
               if (error) {
                 logging.info(NAMESPACE, "unable to sign jwt");
 
-                res.status(401).json({
+                res.status(500).json({
                   message: "Unable to sign JWT",
                   error,
                 });
               } else if (token) {
                 res.json({
-                  auth: true,
                   token: token,
                   message: "Auth successful",
                   user,
@@ -112,23 +111,20 @@ const login = (req: Request, res: Response) => {
               }
             });
           } else {
-            res.json({
-              auth: false,
-              token: null,
+            res.status(400).json({
               message: "Password mismatch!",
-              user: null,
             });
           }
         });
       } else {
-        res.json({ message: "User doesn't exist!" });
+        res.status(404).json({ message: "User doesn't exist!" });
       }
     }
   );
 };
 
 // Retrieve user's identity according to his id extracted from json web token and stored in locals.
-const getIdentity = (req: Request, res: Response) => {
+const getIdentity = (_req: Request, res: Response) => {
   logging.info(NAMESPACE, "Login user based on token");
 
   pool.query(
@@ -138,7 +134,7 @@ const getIdentity = (req: Request, res: Response) => {
       if (error) {
         res.status(500).json({ message: error.message, error });
       } else if (result.rowCount == 0) {
-        res.json({ message: "User doesn't exists!", result });
+        res.status(404).json({ message: "User doesn't exists!", result });
       } else {
         res.json({ user: result.rows[0] });
       }

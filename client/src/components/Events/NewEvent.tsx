@@ -43,7 +43,7 @@ const NewEvent = () => {
 
   const submitFormHandler = (event: React.FormEvent) => {
     event.preventDefault();
-
+    console.log(date.toUTCString());
     const name: string = nameInputRef.current?.value.trim() || "";
     const note: string = noteInputRef.current?.value.trim() || "";
     const street: string = streetInputRef.current?.value.trim() || "";

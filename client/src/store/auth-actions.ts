@@ -52,16 +52,6 @@ export const loginUser = (name: string, pwd: string) => {
     );
     try {
       const res = await Axios.post(`${API_URL}users/login`, { name, pwd });
-      if (!res.data.auth && res.data.message) {
-        dispatch(
-          showNotification({
-            type: UiTypes.Error,
-            title: "Error",
-            message: res.data.message,
-          })
-        );
-        return;
-      }
       localStorage.setItem("token", res.data.token || "Invalid token");
       dispatch(
         authActions.login({ user: res.data.user, token: res.data.token })
@@ -73,16 +63,14 @@ export const loginUser = (name: string, pwd: string) => {
           message: "",
         })
       );
-      return;
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
           title: "Error",
-          message: "Network error",
+          message: error.response.data.message || "Network error",
         })
       );
-      console.error(error);
     }
   };
 };
@@ -97,20 +85,10 @@ export const registerUser = (name: string, pwd: string) => {
       })
     );
     try {
-      const res = await Axios.post(`${API_URL}users/register`, {
+      await Axios.post(`${API_URL}users/register`, {
         name,
         pwd,
       });
-      if (res.data.message) {
-        dispatch(
-          showNotification({
-            type: UiTypes.Error,
-            title: "Error",
-            message: res.data.message,
-          })
-        );
-        return;
-      }
       dispatch(
         showNotification({
           type: UiTypes.Success,
@@ -118,12 +96,12 @@ export const registerUser = (name: string, pwd: string) => {
           message: "Successfully registered",
         })
       );
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
           title: "Error",
-          message: "Network error",
+          message: error.response.data.message || "Network error",
         })
       );
       console.error(error);

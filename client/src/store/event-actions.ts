@@ -16,34 +16,34 @@ export const createEvent = (data: IEventPostData) => {
         message: "",
       })
     );
+    console.log("date -> ", data.date);
     try {
-      const res = await Axios.post(`${API_URL}events`, data);
-      if (res.data.message) {
-        dispatch(
-          showNotification({
-            type: UiTypes.Error,
-            title: "Error",
-            message: res.data.message,
-          })
-        );
-        return;
-      }
+      await Axios.post(`${API_URL}events`, {
+        ...data,
+        address: data.address
+          ? {
+              street: data.address?.street,
+              street_number: data.address?.streetNumber,
+              city: data.address?.city,
+              country: data.address?.country,
+            }
+          : null,
+      });
       dispatch(
         showNotification({
           type: UiTypes.Success,
-          title: "event cration",
+          title: "event creation",
           message: "Event successfully created",
         })
       );
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
           title: "Error",
-          message: "Network error",
+          message: error.response.data.message || "Network error",
         })
       );
-      console.error(error);
     }
   };
 };
@@ -60,16 +60,6 @@ export const fetchEvents = () => {
     );
     try {
       const res = await Axios.get(`${API_URL}events`);
-      if (res.data.message) {
-        dispatch(
-          showNotification({
-            type: UiTypes.Error,
-            title: "Error",
-            message: res.data.message,
-          })
-        );
-        return;
-      }
       dispatch(replaceEvents({ events: res.data.result }));
       // dispatch(
       //   showNotification({
@@ -78,15 +68,14 @@ export const fetchEvents = () => {
       //     message: "Events successfully fetched",
       //   })
       // );
-    } catch (error) {
+    } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
           title: "Error",
-          message: "Network error",
+          message: error.response.data.message || "Network error",
         })
       );
-      console.error(error);
     }
   };
 };

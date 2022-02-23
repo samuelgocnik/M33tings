@@ -10,6 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const user_1 = __importDefault(require("./routes/user"));
 const event_1 = __importDefault(require("./routes/event"));
+const participant_1 = __importDefault(require("./routes/participant"));
 const NAMESPACE = "Server";
 const port = config_1.default.server.port;
 const host = config_1.default.server.hostname;
@@ -41,6 +42,7 @@ app.use((_req, res, next) => {
 /** Routes */
 app.use("/users", user_1.default);
 app.use("/events", event_1.default);
+app.use("/participant", participant_1.default);
 /** Error handling */
 app.use((_req, res, _next) => {
     const err = new Error("not found");

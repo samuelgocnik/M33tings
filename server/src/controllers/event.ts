@@ -44,7 +44,7 @@ const createEvent = (req: Request, res: Response) => {
 
   const data: IEvent = req.body;
   if (!data || !data.name || !data.date) {
-    res.json({ message: "Invalid event data" });
+    res.status(400).json({ message: "Invalid event data" });
     return;
   }
 
@@ -57,7 +57,7 @@ const createEvent = (req: Request, res: Response) => {
       !data.address.city ||
       !data.address.country
     ) {
-      res.json({ message: "Invalid event address data" });
+      res.status(400).json({ message: "Invalid event address data" });
       return;
     }
     query =
@@ -90,7 +90,7 @@ const createEvent = (req: Request, res: Response) => {
     if (error) {
       res.status(500).json({ error, message: error.message });
     } else if (result && result.rowCount == 0) {
-      res.json({ message: "Could not create a new event!" });
+      res.status(400).json({ message: "Could not create a new event!" });
     } else {
       res.json(result);
     }
@@ -107,7 +107,7 @@ const createEventAddress = (req: Request, res: Response) => {
     !req.body.city ||
     !req.body.country
   ) {
-    res.json({ message: "Invalid event address data" });
+    res.status(400).json({ message: "Invalid event address data" });
     return;
   }
 
@@ -126,7 +126,9 @@ const createEventAddress = (req: Request, res: Response) => {
       if (error) {
         res.status(500).json({ error, message: error.message });
       } else if (result && result.rowCount == 0) {
-        res.json({ message: "Could not create a new event address!" });
+        res
+          .status(400)
+          .json({ message: "Could not create a new event address!" });
       } else {
         res.json(result);
       }
@@ -138,7 +140,7 @@ const createEventDate = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Creating event address");
 
   if (!req.body.event_id || !req.body.proceedings_time) {
-    res.json({ message: "Invalid event date data" });
+    res.status(400).json({ message: "Invalid event date data" });
     return;
   }
 
@@ -156,7 +158,7 @@ const createEventDate = (req: Request, res: Response) => {
       if (error) {
         res.status(500).json({ error, message: error.message });
       } else if (result && result.rowCount == 0) {
-        res.json({ message: "Could not create a new event date!" });
+        res.status(400).json({ message: "Could not create a new event date!" });
       } else {
         res.json(result);
       }
