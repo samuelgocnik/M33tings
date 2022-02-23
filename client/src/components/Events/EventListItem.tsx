@@ -1,7 +1,8 @@
 import React from "react";
 import classes from "./EventListItem.module.css";
 import "./DateTimeSelector.css";
-import PointingRightFinger from "./../../assets/icons/pointing-right-finger.svg";
+import PointingRightFingerClear from "./../../assets/icons/pointing-right-finger-clear.svg";
+import PointingRightFingerSecondary from "./../../assets/icons/pointing-right-finger-secondary.svg";
 import { IEvent, IEventParticipant } from "../../models/Event";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
@@ -17,7 +18,6 @@ const EventListItem = (props: IEvent) => {
   const interestedHandler = () => {};
 
   const deleteEventHandler = () => {};
-
   const editEventHandler = () => {};
 
   const going = props.allParticipants
@@ -31,12 +31,19 @@ const EventListItem = (props: IEvent) => {
         .map((x: IEventParticipant) => <span key={x.id}>{x.name}</span>)
     : [];
 
+  const pointingFinger =
+    Math.abs(new Date().getTime() - new Date(props.proceedingsTime).getTime()) /
+      1000 <
+    24 * 60 * 60
+      ? PointingRightFingerSecondary
+      : PointingRightFingerClear;
+
   return (
     <Card className={classes.event}>
       <div className={classes["event__head"]}>
         <div className={classes["event__info"]}>
           <div className={classes["event__icon"]}>
-            <img src={PointingRightFinger} alt="Right pointing finger icon" />
+            <img src={pointingFinger} alt="Right pointing finger icon" />
           </div>
           <div className={classes["event__summary"]}>
             <p>{format(new Date(props.proceedingsTime), "dd/MM/yyyy H:mm")}</p>

@@ -88,6 +88,11 @@
   font-weight: 400;
 }
 
+.event__summary p:nth-child(2) {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-normal);
+}
+
 @media only screen and (max-width: 1024px) {
   .event {
     width: 75%;

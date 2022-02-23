@@ -12,8 +12,8 @@
   --primary: #7e805d;
   --primary-dark: #52533d;
 
-  --secondary-light: rgb(230, 187, 114);
-  --secondary: #daa03dff;
+  --secondary-light: #e6bb72;
+  --secondary: #daa03d;
 
   --black: #000;
   --white: #fff;
@@ -38,6 +38,13 @@
   --font-size-normal: 1rem;
   --font-size-medium: 1.2rem;
   --font-size-big: 1.5rem;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   --border-radius-small: 0.2rem;
   --border-radius-medium: 0.5rem;

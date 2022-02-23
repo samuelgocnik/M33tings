@@ -16,7 +16,6 @@ export const createEvent = (data: IEventPostData) => {
         message: "",
       })
     );
-    console.log("date -> ", data.date);
     try {
       await Axios.post(`${API_URL}events`, {
         ...data,

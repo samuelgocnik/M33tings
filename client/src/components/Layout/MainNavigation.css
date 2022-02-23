@@ -59,6 +59,12 @@
   background-color: var(--primary);
 }
 
+@media only screen and (max-width: 1024px) {
+  .header {
+    padding: var(--padding-big);
+  }
+}
+
 @media only screen and (max-width: 720px) {
   .header {
     padding: 0 var(--padding-big);
