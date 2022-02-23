@@ -15,19 +15,25 @@ const eventSlice = createSlice({
         let address = null;
         if (x.address) {
           address = {
+            id: x.address.id,
             eventId: x.address.event_id,
+            street: x.address.street,
             streetNumber: x.address.street_number,
+            city: x.address.city,
+            country: x.address.country,
             createdAt: x.address.created_at,
-            ...x.address,
           };
         }
         return {
+          id: x.id,
+          name: x.name,
+          note: x.note,
+          creator: x.creator_name,
+          creatorId: x.creator_id,
           allParticipants: x.all_participants,
           proceedingsTime: x.proceedings_time,
           createdAt: x.created_at,
-          creatorId: x.creator_id,
-          address: address,
-          ...x,
+          address,
         };
       });
     },

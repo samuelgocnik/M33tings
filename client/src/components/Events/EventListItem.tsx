@@ -13,7 +13,6 @@ import { useAppSelector } from "../../hooks/use-selector";
 const EventListItem = (props: IEvent) => {
   const userId: number = useAppSelector((state) => state.auth.user?.id) || 0;
 
-  console.log(userId, props.creatorId)
   const goingHandler = () => {};
   const interestedHandler = () => {};
 
