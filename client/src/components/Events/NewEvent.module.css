@@ -1,0 +1,76 @@
+.new-event-form {
+  margin: var(--margin-big) auto;
+  padding: 2rem;
+
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+
+  color: var(--white);
+  font-size: inherit;
+  background-color: var(--primary-dark);
+
+  transition: var(--transition-short);
+}
+
+.new-event-form__heading {
+  text-align: center;
+  margin: 0 auto var(--margin-big) auto;
+  font-size: var(--font-size-big);
+}
+
+.new-event-form__submit {
+  width: 75%;
+  padding: var(--padding-medium) var(--padding-big);
+  margin: var(--margin-big) auto;
+
+  background-color: var(--secondary);
+  border-radius: var(--border-radius-medium);
+}
+
+.new-event-form__submit:hover {
+  background-color: var(--secondary-light);
+}
+
+.new-event-form__datetime {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: var(--margin-small);
+  margin-bottom: var(--margin-big);
+}
+
+.new-event-form__address-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: var(--margin-small) auto var(--margin-big) auto;
+  padding: var(--padding-medium) var(--padding-big);
+  border-radius: var(--border-radius-medium);
+  border: none;
+  background-color: var(--primary-lightest);
+  transition: var(--transition-short);
+}
+
+.new-event-form__address-button:hover,
+.new-event-form__address-button--active {
+  background-color: var(--secondary-light);
+}
+
+.new-event-form__address-button img {
+  margin: auto;
+  margin-left: var(--margin-medium);
+  height: 1.2rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .new-event-form {
+    width: 75%;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .new-event-form {
+    width: 100%;
+  }
+}

@@ -1,0 +1,52 @@
+:root {
+  /* Color definition */
+  --danger: #dc3545;
+  --danger-light: #f8d7da;
+  --success: #198754;
+  --success-light: #d1e7dd;
+  --warning: #ffc107;
+  --warning-light: #fff3cd;
+
+  --primary-lightest: #e8e9d5;
+  --primary-light: #b2b48c;
+  --primary: #7e805d;
+  --primary-dark: #52533d;
+
+  --secondary-light: #e6bb72;
+  --secondary: #daa03d;
+
+  --black: #000;
+  --white: #fff;
+  --light: #dfdfdf;
+  --dark: #242424;
+
+  --gray: #adb5bd;
+
+  /* transtions */
+  --transition-short: all 0.2s ease;
+  --transition-long: all 0.5s ease;
+
+  --margin-small: 0.3rem;
+  --margin-medium: 0.5rem;
+  --margin-big: 1rem;
+  --padding-small: 0.3rem;
+  --padding-medium: 0.5rem;
+  --padding-big: 1rem;
+
+  /* fonts */
+  --font-size-smaller: 0.8rem;
+  --font-size-normal: 1rem;
+  --font-size-medium: 1.2rem;
+  --font-size-big: 1.5rem;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --border-radius-small: 0.2rem;
+  --border-radius-medium: 0.5rem;
+  --border-radius-big: 1rem;
+}

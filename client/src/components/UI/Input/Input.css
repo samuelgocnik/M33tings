@@ -1,0 +1,44 @@
+.form-control {
+  margin-top: var(--margin-small);
+  margin-bottom: var(--margin-big)
+}
+
+.form-control input,
+.form-control label {
+  display: block;
+}
+
+.form-control label {
+  font-size: inherit;
+  text-align: center;
+}
+
+
+.form-control input,
+.form-control select {
+  margin: var(--margin-small) 0;
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius-medium);
+  border: 0.1rem solid var(--primary);
+  background-color: var(--white);
+  width: 100%;
+}
+
+.form-control input:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+.invalid input {
+  background-color: var(--danger-light);
+  border-color: var(--danger);
+}
+
+.invalid input:focus {
+  border-color: var(--danger);
+  background-color: var(--danger-light);
+}
+
+.error-text {
+  color: var(--danger)
+}

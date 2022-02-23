@@ -1,0 +1,52 @@
+{
+  "name": "react-m33tings",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.7.1",
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^12.5.0",
+    "axios": "^0.24.0",
+    "date-fns": "^2.28.0",
+    "react": "^17.0.1",
+    "react-bem-helper": "^1.4.1",
+    "react-datetime-picker": "^3.5.0",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^5.0.0",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-datetime-picker": "^3.4.1",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-redux": "^7.1.21",
+    "@types/react-router-dom": "^5.3.2"
+  }
+}
