@@ -42,15 +42,7 @@ const register = (req: Request, res: Response) => {
     }
 
     pool.query(
-      "INSERT INTO users (name, pwd) " +
-        `SELECT $1, $2 ` +
-        "FROM users " +
-        "WHERE NOT EXISTS( " +
-        "SELECT id " +
-        "FROM users " +
-        `WHERE name = $1 ` +
-        ") " +
-        "LIMIT 1",
+      "INSERT INTO users (name, pwd) VALUES ($1, $2) ON CONFLICT (name) DO NOTHING",
       [name, hash],
       (error: Error, result: QueryResult<any>) => {
         if (error) {
