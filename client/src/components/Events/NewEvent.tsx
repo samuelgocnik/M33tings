@@ -43,7 +43,7 @@ const NewEvent = () => {
 
   const submitFormHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(date.toUTCString());
+    console.log(date.toString());
     const name: string = nameInputRef.current?.value.trim() || "";
     const note: string = noteInputRef.current?.value.trim() || "";
     const street: string = streetInputRef.current?.value.trim() || "";
@@ -174,14 +174,13 @@ const NewEvent = () => {
           </div>
         )}
         {notification.type === UiTypes.Loading && <LoadingDots />}
-        {notification.type !== UiTypes.Loading && (
-          <Button
-            type="submit"
-            text="Add event"
-            className={classes["new-event-form__submit"]}
-            onClick={() => {}}
-          />
-        )}
+        <Button
+          type="submit"
+          text="Add event"
+          className={classes["new-event-form__submit"]}
+          onClick={() => {}}
+          disabled={notification.type === UiTypes.Loading}
+        />
       </form>
     </Card>
   );

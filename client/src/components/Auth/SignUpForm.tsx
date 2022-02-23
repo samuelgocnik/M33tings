@@ -113,14 +113,13 @@ const SignUpForm = () => {
         />
 
         <div className={classes.actions}>
-          {notification.type !== UiTypes.Loading && (
-            <Button
-              text="Create Account"
-              type="submit"
-              className={classes["auth-form__submit"]}
-              onClick={() => {}}
-            />
-          )}
+          <Button
+            text="Create Account"
+            type="submit"
+            className={classes["auth-form__submit"]}
+            onClick={() => {}}
+            disabled={notification.type === UiTypes.Loading}
+          />
           {notification.type === UiTypes.Loading && <LoadingDots />}
         </div>
       </form>

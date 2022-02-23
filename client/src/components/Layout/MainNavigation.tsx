@@ -60,6 +60,7 @@ const MainNavigation = () => {
                 type="button"
                 className=""
                 onClick={logoutHandler}
+                disabled={false}
               />
             )}
             {isLoading && <LoadingDots />}

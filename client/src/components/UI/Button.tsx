@@ -6,6 +6,7 @@ interface IButtonProps {
   className: string;
   type: "button" | "submit" | "reset";
   onClick: () => void;
+  disabled: boolean;
 }
 
 const Button = (props: IButtonProps) => {
@@ -14,6 +15,7 @@ const Button = (props: IButtonProps) => {
       type={props.type}
       onClick={props.onClick}
       className={`${classes.button} ${props.className}`}
+      disabled={props.disabled}
     >
       {props.text}
     </button>

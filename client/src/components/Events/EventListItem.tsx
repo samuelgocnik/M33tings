@@ -56,6 +56,7 @@ const EventListItem = (props: IEvent) => {
               text="Going"
               className={classes["event__join"]}
               onClick={goingHandler}
+              disabled={false}
             />
             {going}
           </div>
@@ -65,6 +66,7 @@ const EventListItem = (props: IEvent) => {
               text="Interested"
               className={classes["event__join"]}
               onClick={interestedHandler}
+              disabled={false}
             />
             {interested}
           </div>

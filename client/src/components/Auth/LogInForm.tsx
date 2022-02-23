@@ -94,14 +94,13 @@ function LogIn() {
         />
 
         <div className={classes.actions}>
-          {notification.type !== UiTypes.Loading && (
-            <Button
-              text="Login"
-              type="submit"
-              className={classes["auth-form__submit"]}
-              onClick={() => {}}
-            />
-          )}
+          <Button
+            text="Login"
+            type="submit"
+            className={classes["auth-form__submit"]}
+            onClick={() => {}}
+            disabled={notification.type === UiTypes.Loading}
+          />
           {notification.type === UiTypes.Loading && <LoadingDots />}
         </div>
       </form>
