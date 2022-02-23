@@ -26,6 +26,12 @@ export interface IEventParticipant {
   going: boolean;
 }
 
+export interface IEventParticipants {
+  participants: IEventParticipant[];
+  userId: number;
+  eventId: number;
+}
+
 export interface IEventStore {
   events: IEvent[];
 }

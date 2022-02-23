@@ -1,27 +1,31 @@
 import React from "react";
-import classes from "./EventListItem.module.css";
+import classes from "./EventParticipants.module.css";
 import "./DateTimeSelector.css";
-import PointingRightFingerClear from "./../../assets/icons/pointing-right-finger-clear.svg";
-import PointingRightFingerSecondary from "./../../assets/icons/pointing-right-finger-secondary.svg";
-import { IEvent, IEventParticipant } from "../../models/Event";
+import { IEventParticipant, IEventParticipants } from "../../models/Event";
 import Button from "../UI/Button";
-import { useAppSelector } from "../../hooks/use-selector";
 
-const EventParticipants = (props: { participants: IEventParticipant[] }) => {
-  const userId: number = useAppSelector((state) => state.auth.user?.id) || 0;
-
+const EventParticipants = (props: IEventParticipants) => {
   const goingHandler = () => {};
   const interestedHandler = () => {};
+
+  let isUserGoing: boolean = false;
+  let isUserInterested: boolean = false;
 
   const going = props.participants
     ? props.participants
         .filter((x) => x.going)
-        .map((x: IEventParticipant) => <span key={x.id}>{x.name}</span>)
+        .map((x: IEventParticipant) => {
+          isUserGoing = isUserGoing || x.id === props.userId;
+          return <span key={x.id}>{x.name}</span>;
+        })
     : [];
   const interested = props.participants
     ? props.participants
         .filter((x) => !x.going)
-        .map((x: IEventParticipant) => <span key={x.id}>{x.name}</span>)
+        .map((x: IEventParticipant) => {
+          isUserInterested = isUserInterested || x.id === props.userId;
+          return <span key={x.id}>{x.name}</span>;
+        })
     : [];
 
   return (
@@ -30,7 +34,9 @@ const EventParticipants = (props: { participants: IEventParticipant[] }) => {
         <Button
           type="button"
           text="Going"
-          className={classes["event__join"]}
+          className={`${classes["event__join"]} ${
+            isUserGoing && classes["event__join--active"]
+          }`}
           onClick={goingHandler}
           disabled={false}
         />
@@ -40,7 +46,9 @@ const EventParticipants = (props: { participants: IEventParticipant[] }) => {
         <Button
           type="button"
           text="Interested"
-          className={classes["event__join"]}
+          className={`${classes["event__join"]} ${
+            isUserInterested && classes["event__join--active"]
+          }`}
           onClick={interestedHandler}
           disabled={false}
         />

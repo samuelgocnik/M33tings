@@ -20,6 +20,7 @@
   align-self: center;
   display: flex;
   flex-direction: row;
+  margin-bottom: var(--margin-small);
 }
 
 .event__info p:not(:first-child) {
@@ -47,34 +48,6 @@
 
 .event__action img {
   width: 100%;
-}
-
-.event__participants {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.8rem;
-}
-
-.event__join {
-  padding: var(--padding-small) var(--padding-big);
-
-  border-radius: var(--border-radius-medium);
-  background-color: var(--secondary-light);
-  font-weight: bold;
-}
-
-.event__join:hover {
-  background-color: var(--secondary);
-}
-
-.participants {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-
-.participants span {
-  font-size: var(--font-size-smaller);
 }
 
 .event__icon {
