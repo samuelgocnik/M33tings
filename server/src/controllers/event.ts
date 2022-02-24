@@ -15,7 +15,7 @@ const getEvents = (_req: Request, res: Response) => {
       "all_participants, row_to_json(ea) AS address, event.created_at FROM event " +
       // include participants
       "LEFT JOIN ( " +
-      "SELECT par.event_id as id, array_agg(json_build_object('id', u.id, 'name', u.name, 'going' ,par.going)) AS all_participants " +
+      "SELECT par.event_id as id, array_agg(json_build_object('id', par.id, 'user_id', u.id, 'name', u.name, 'going' ,par.going)) AS all_participants " +
       "FROM participant par " +
       "JOIN users u ON u.id = par.user_id " +
       "GROUP BY par.event_id " +
