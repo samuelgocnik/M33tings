@@ -7,7 +7,7 @@ import { authActions } from "../../store/auth-slice";
 import { uiActions } from "../../store/ui-slice";
 import Button from "../UI/Button";
 import LoadingDots from "../UI/Loading/LoadingDots";
-import DesktopLogo from "./../../assets/icons/m33tings-desktop.svg";
+import DesktopLogo from "./../../assets/icons/m33tings-desktop-stroke.svg";
 import "./MainNavigation.css";
 
 const classes = new BEMHelper({
