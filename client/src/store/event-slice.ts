@@ -45,6 +45,34 @@ const eventSlice = createSlice({
         };
       });
     },
+
+    addParticipant(state, action) {
+      const index: number = state.events.findIndex(
+        (x) => x.id === action.payload.eventId
+      );
+      state.events[index].allParticipants.push(action.payload.participant);
+    },
+
+    removeParticipant(state, action) {
+      const index: number = state.events.findIndex(
+        (x) => x.id === action.payload.eventId
+      );
+      const updatedParticipants = state.events[index].allParticipants.filter(
+        (x) => x.id !== action.payload.participantId
+      );
+      state.events[index].allParticipants = updatedParticipants;
+    },
+
+    updateParticipant(state, action) {
+      const index: number = state.events.findIndex(
+        (x) => x.id === action.payload.eventId
+      );
+      const participantIndex: number = state.events[
+        index
+      ].allParticipants.findIndex((x) => x.id === action.payload.participantId);
+      state.events[index].allParticipants[participantIndex].going =
+        action.payload.going;
+    },
   },
 });
 

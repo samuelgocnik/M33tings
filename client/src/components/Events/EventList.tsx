@@ -17,7 +17,7 @@ const EventList = () => {
 
   return (
     <>
-      {notification.title === UiTitles.EventsSuccessfullyFetched &&
+      {notification.title !== UiTitles.FetchingEvents &&
         (listOfEvents.length !== 0 ? (
           listOfEvents
         ) : (

@@ -1,5 +1,10 @@
 import Axios from "axios";
 import { IEventPostData } from "../models/Event";
+import {
+  IParticipantDelete,
+  IParticipantPost,
+  IParticipantUpdate,
+} from "../models/Participant";
 import { UiTitles, UiTypes } from "../models/Ui";
 import API_URL from "../utils/config";
 import { eventActions } from "./event-slice";
@@ -69,6 +74,134 @@ export const fetchEvents = () => {
       );
     } catch (error: any) {
       console.log(error);
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: UiTitles.None,
+          message: error.response.data.message || "Network error",
+        })
+      );
+    }
+  };
+};
+
+export const addParticipantToEvent = (data: IParticipantPost, name: string) => {
+  const { addParticipant } = eventActions;
+  return async (dispatch: any) => {
+    dispatch(
+      showNotification({
+        type: UiTypes.Loading,
+        title: UiTitles.EditingEventParticipant,
+        message: "",
+      })
+    );
+    try {
+      const res = await Axios.post(`${API_URL}participant`, {
+        user_id: data.userId,
+        event_id: data.eventId,
+        going: data.going,
+      });
+      dispatch(
+        addParticipant({
+          eventId: data.eventId,
+          participant: {
+            id: res.data.id,
+            userId: res.data.user_id,
+            going: res.data.going,
+            name,
+          },
+        })
+      );
+      dispatch(
+        showNotification({
+          type: UiTypes.Success,
+          title: UiTitles.EventParticipantSuccessfullyEdited,
+          message: "Event participant succesfully created",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: UiTitles.None,
+          message: error.response.data.message || "Network error",
+        })
+      );
+    }
+  };
+};
+
+export const updateEventParticipant = (
+  data: IParticipantUpdate,
+  eventId: number
+) => {
+  const { updateParticipant } = eventActions;
+  return async (dispatch: any) => {
+    dispatch(
+      showNotification({
+        type: UiTypes.Loading,
+        title: UiTitles.EditingEventParticipant,
+        message: "",
+      })
+    );
+    try {
+      await Axios.put(`${API_URL}participant`, data);
+      dispatch(
+        updateParticipant({
+          eventId,
+          participantId: data.id,
+          going: data.going,
+        })
+      );
+      dispatch(
+        showNotification({
+          type: UiTypes.Success,
+          title: UiTitles.EventParticipantSuccessfullyEdited,
+          message: "Event participant succesfully updated",
+        })
+      );
+    } catch (error: any) {
+      dispatch(
+        showNotification({
+          type: UiTypes.Error,
+          title: UiTitles.None,
+          message: error.response.data.message || "Network error",
+        })
+      );
+    }
+  };
+};
+
+export const deleteEventParticipant = (
+  data: IParticipantDelete,
+  eventId: number
+) => {
+  const { removeParticipant } = eventActions;
+  return async (dispatch: any) => {
+    dispatch(
+      showNotification({
+        type: UiTypes.Loading,
+        title: UiTitles.EditingEventParticipant,
+        message: "",
+      })
+    );
+    try {
+      const config = { data: { id: data.id } };
+      await Axios.delete(`${API_URL}participant`, config);
+      dispatch(
+        removeParticipant({
+          eventId: eventId,
+          participantId: data.id,
+        })
+      );
+      dispatch(
+        showNotification({
+          type: UiTypes.Success,
+          title: UiTitles.EventParticipantSuccessfullyEdited,
+          message: "Event participant succesfully deleted",
+        })
+      );
+    } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
