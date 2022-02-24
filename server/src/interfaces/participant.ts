@@ -3,3 +3,12 @@ export interface IParticipantCreate {
   event_id: number;
   going: boolean;
 }
+
+export interface IParticipantDelete {
+  id: number;
+}
+
+export interface IParticipantUpdate {
+  id: number;
+  going: boolean;
+}

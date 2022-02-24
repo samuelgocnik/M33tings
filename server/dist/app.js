@@ -31,7 +31,7 @@ app.use(body_parser_1.default.json());
 /** Api rules */
 app.use((0, cors_1.default)({
     origin,
-    methods: ["GET", "POST", "DELETE"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
 }));
 app.use((_req, res, next) => {
