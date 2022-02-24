@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IUiSlice, UiTypes } from "./../models/Ui";
+import { IUiSlice, UiTitles, UiTypes } from "./../models/Ui";
 
 const initialState: IUiSlice = {
-  notification: { type: UiTypes.None, title: "", message: "" },
+  notification: { type: UiTypes.None, title: UiTitles.None, message: "" },
 };
 
 const uiSlice = createSlice({
@@ -19,7 +19,7 @@ const uiSlice = createSlice({
     setNoneNotification(state) {
       state.notification = {
         type: UiTypes.None,
-        title: "",
+        title: UiTitles.None,
         message: "",
       };
     },

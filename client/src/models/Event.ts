@@ -22,6 +22,7 @@ export interface IEventAddress {
 
 export interface IEventParticipant {
   id: number;
+  userId: number;
   name: string;
   going: boolean;
 }

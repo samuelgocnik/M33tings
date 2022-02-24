@@ -1,6 +1,6 @@
 export interface INotification {
   type: UiTypes;
-  title: string;
+  title: UiTitles;
   message: string;
 }
 
@@ -13,4 +13,17 @@ export enum UiTypes {
   Loading,
   Success,
   None,
+}
+
+export enum UiTitles {
+  None,
+  FetchingEvents,
+  EventsSuccessfullyFetched,
+  Registration, 
+  SuccessfullyRegistered,
+  Login,
+  SuccessfullyLoggedIn,
+  CreatingEvent,
+  EventSuccessfullyCreated,
+  SuccessfullyLoggedOut,
 }

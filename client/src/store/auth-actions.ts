@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { UiTypes } from "../models/Ui";
+import { UiTitles, UiTypes } from "../models/Ui";
 import API_URL from "../utils/config";
 import { authActions } from "./auth-slice";
 import { uiActions } from "./ui-slice";
@@ -46,7 +46,7 @@ export const loginUser = (name: string, pwd: string) => {
     dispatch(
       showNotification({
         type: UiTypes.Loading,
-        title: "",
+        title: UiTitles.Login,
         message: "",
       })
     );
@@ -59,7 +59,7 @@ export const loginUser = (name: string, pwd: string) => {
       dispatch(
         showNotification({
           type: UiTypes.Success,
-          title: "",
+          title: UiTitles.SuccessfullyLoggedIn,
           message: "",
         })
       );
@@ -67,7 +67,7 @@ export const loginUser = (name: string, pwd: string) => {
       dispatch(
         showNotification({
           type: UiTypes.Error,
-          title: "Error",
+          title: UiTitles.None,
           message: error.response.data.message || "Network error",
         })
       );
@@ -80,7 +80,7 @@ export const registerUser = (name: string, pwd: string) => {
     dispatch(
       showNotification({
         type: UiTypes.Loading,
-        title: "",
+        title: UiTitles.Registration,
         message: "",
       })
     );
@@ -92,19 +92,18 @@ export const registerUser = (name: string, pwd: string) => {
       dispatch(
         showNotification({
           type: UiTypes.Success,
-          title: "registration",
-          message: "Successfully registered",
+          title: UiTitles.SuccessfullyRegistered,
+          message: `User ${name} successfully registered`,
         })
       );
     } catch (error: any) {
       dispatch(
         showNotification({
           type: UiTypes.Error,
-          title: "Error",
+          title: UiTitles.None,
           message: error.response.data.message || "Network error",
         })
       );
-      console.error(error);
     }
   };
 };

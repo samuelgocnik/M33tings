@@ -86,12 +86,9 @@ const NewEvent = () => {
   return (
     <Card className={classes["new-event-form"]}>
       <h1 className={classes["new-event-form__heading"]}>Create a new event</h1>
-      {notification.type === UiTypes.Error && (
-        <Message type="error" value={notification.message} />
-      )}
-      {notification.type === UiTypes.Success && (
-        <Message type="success" value={notification.message} />
-      )}
+      
+      <Message type={notification.type} value={notification.message} />
+      
       <form onSubmit={submitFormHandler}>
         <Input
           ref={nameInputRef}

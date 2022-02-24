@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import BEMHelper from "react-bem-helper";
 import { Link, useHistory } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/use-dispatch";
-import { UiTypes } from "../../models/Ui";
+import { UiTitles, UiTypes } from "../../models/Ui";
 import { authActions } from "../../store/auth-slice";
 import { uiActions } from "../../store/ui-slice";
 import Button from "../UI/Button";
@@ -28,7 +28,7 @@ const MainNavigation = () => {
       dispatch(
         showNotification({
           type: UiTypes.Success,
-          title: "logout",
+          title: UiTitles.SuccessfullyLoggedOut,
           message: "Successfully log out",
         })
       );

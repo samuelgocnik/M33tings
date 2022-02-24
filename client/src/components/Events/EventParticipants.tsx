@@ -5,29 +5,49 @@ import { IEventParticipant, IEventParticipants } from "../../models/Event";
 import Button from "../UI/Button";
 
 const EventParticipants = (props: IEventParticipants) => {
-  const goingHandler = () => {};
-  const interestedHandler = () => {};
-
   let isUserGoing: boolean = false;
   let isUserInterested: boolean = false;
+  let userParticipantEventId: number = 0;
+
+  const goingHandler = () => {
+    if (isUserGoing) {
+      // delete participant record
+    } else if (isUserInterested) {
+      // update participant record
+    } else {
+      // create participant record with going on true
+    }
+  };
+  const interestedHandler = () => {
+    if (isUserInterested) {
+      // delete participant record
+    } else if (isUserGoing) {
+      // update participant record
+    } else {
+      // create participant record with false going
+    }
+  };
 
   const going = props.participants
-    ? props.participants
-        .filter((x) => x.going)
-        .map((x: IEventParticipant) => {
-          isUserGoing = isUserGoing || x.id === props.userId;
-          return <span key={x.id}>{x.name}</span>;
-        })
-    : [];
-  const interested = props.participants
-    ? props.participants
-        .filter((x) => !x.going)
-        .map((x: IEventParticipant) => {
-          isUserInterested = isUserInterested || x.id === props.userId;
-          return <span key={x.id}>{x.name}</span>;
-        })
-    : [];
+    .filter((x) => x.going)
+    .map((x: IEventParticipant) => {
+      if (x.userId === props.userId) {
+        isUserGoing = true;
+        userParticipantEventId = x.id;
+      }
+      return <span key={x.id}>{x.name}</span>;
+    });
 
+  const interested = props.participants
+    .filter((x) => !x.going)
+    .map((x: IEventParticipant) => {
+      if (x.userId === props.userId) {
+        isUserInterested = true;
+        userParticipantEventId = x.id;
+      }
+      return <span key={x.id}>{x.name}</span>;
+    });
+    
   return (
     <div className={classes["event__participants"]}>
       <div className={classes["participants"]}>

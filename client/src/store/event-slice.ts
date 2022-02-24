@@ -24,13 +24,21 @@ const eventSlice = createSlice({
             createdAt: x.address.created_at,
           };
         }
+        const allParticipants = x.all_participants
+          ? x.all_participants.map((tmp: any) => ({
+              id: tmp.id,
+              userId: tmp.user_id,
+              name: tmp.name,
+              going: tmp.going,
+            }))
+          : [];
         return {
           id: x.id,
           name: x.name,
           note: x.note,
           creator: x.creator_name,
           creatorId: x.creator_id,
-          allParticipants: x.all_participants,
+          allParticipants,
           proceedingsTime: x.proceedings_time,
           createdAt: x.created_at,
           address,

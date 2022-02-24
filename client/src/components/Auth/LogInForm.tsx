@@ -66,12 +66,9 @@ function LogIn() {
   return (
     <Card className={classes["auth-form"]}>
       <h1 className={classes["auth-form__heading"]}>Log In</h1>
-      {notification.type === UiTypes.Error && (
-        <Message type="error" value={notification.message} />
-      )}
-      {notification.type === UiTypes.Success && (
-        <Message type="success" value={notification.message} />
-      )}
+
+      <Message type={notification.type} value={notification.message} />
+      
       <form onSubmit={submitHandler}>
         <Input
           ref={nameInputRef}

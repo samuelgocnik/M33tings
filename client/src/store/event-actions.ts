@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { IEventPostData } from "../models/Event";
-import { UiTypes } from "../models/Ui";
+import { UiTitles, UiTypes } from "../models/Ui";
 import API_URL from "../utils/config";
 import { eventActions } from "./event-slice";
 import { uiActions } from "./ui-slice";
@@ -12,7 +12,7 @@ export const createEvent = (data: IEventPostData) => {
     dispatch(
       showNotification({
         type: UiTypes.Loading,
-        title: "",
+        title: UiTitles.CreatingEvent,
         message: "",
       })
     );
@@ -31,7 +31,7 @@ export const createEvent = (data: IEventPostData) => {
       dispatch(
         showNotification({
           type: UiTypes.Success,
-          title: "event creation",
+          title: UiTitles.EventSuccessfullyCreated,
           message: "Event successfully created",
         })
       );
@@ -39,7 +39,7 @@ export const createEvent = (data: IEventPostData) => {
       dispatch(
         showNotification({
           type: UiTypes.Error,
-          title: "Error",
+          title: UiTitles.None,
           message: error.response.data.message || "Network error",
         })
       );
@@ -53,25 +53,26 @@ export const fetchEvents = () => {
     dispatch(
       showNotification({
         type: UiTypes.Loading,
-        title: "",
+        title: UiTitles.FetchingEvents,
         message: "",
       })
     );
     try {
       const res = await Axios.get(`${API_URL}events`);
       dispatch(replaceEvents({ events: res.data.result }));
-      // dispatch(
-      //   showNotification({
-      //     type: UiTypes.Success,
-      //     title: "Events fetch",
-      //     message: "Events successfully fetched",
-      //   })
-      // );
+      dispatch(
+        showNotification({
+          type: UiTypes.Success,
+          title: UiTitles.EventsSuccessfullyFetched,
+          message: "Events successfully fetched",
+        })
+      );
     } catch (error: any) {
+      console.log(error);
       dispatch(
         showNotification({
           type: UiTypes.Error,
-          title: "Error",
+          title: UiTitles.None,
           message: error.response.data.message || "Network error",
         })
       );
