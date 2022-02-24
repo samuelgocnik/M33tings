@@ -52,8 +52,13 @@ export const createEvent = (data: IEventPostData) => {
   };
 };
 
-export const fetchEvents = () => {
-  const { replaceEvents } = eventActions;
+export const fetchEvents = (
+  replace: boolean,
+  limit: number = 5,
+  offset: number = 0
+) => {
+  const { replaceEvents, addEvents } = eventActions;
+  
   return async (dispatch: any) => {
     dispatch(
       showNotification({
@@ -63,8 +68,15 @@ export const fetchEvents = () => {
       })
     );
     try {
-      const res = await Axios.get(`${API_URL}events`);
-      dispatch(replaceEvents({ events: res.data.result }));
+      console.log("fetching events -> offset -> ", offset);
+      const res = await Axios.get(`${API_URL}events`, {
+        params: { limit, offset },
+      });
+      if (replace) {
+        dispatch(replaceEvents({ events: res.data.result }));
+      } else {
+        dispatch(addEvents({ events: res.data.result }));
+      }
       dispatch(
         showNotification({
           type: UiTypes.Success,

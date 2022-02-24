@@ -7,8 +7,15 @@ import { IEvent } from "../interfaces/event";
 
 const NAMESPACE = "Events";
 
-const getEvents = (_req: Request, res: Response) => {
+const getEvents = (req: Request, res: Response) => {
   logging.info(NAMESPACE, "Getting all events");
+
+  const { limit, offset } = req.query;
+
+  if (!limit || !offset) {
+    res.status(400).json({ message: "Invalid limit and offset data" });
+    return;
+  }
 
   pool.query(
     "SELECT event.id, event.name, users.name AS creator_name, event.creator_id, note, ed.proceedings_time, " +
@@ -27,8 +34,9 @@ const getEvents = (_req: Request, res: Response) => {
       // include address
       "LEFT JOIN event_address ea ON EA.event_id = event.id AND ea.id = (SELECT MAX(id) from event_address WHERE event_address.event_id = event.id) " +
       // order
-      "WHERE ed.proceedings_time > now() ORDER BY ed.proceedings_time ",
-
+      "WHERE ed.proceedings_time > now() ORDER BY ed.proceedings_time " +
+      "LIMIT $1 OFFSET $2",
+    [limit, offset],
     (error: Error, result: QueryResult<any>) => {
       if (error) {
         res.status(500).json({ error, message: error.message });

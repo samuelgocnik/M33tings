@@ -17,6 +17,17 @@
   background-color: var(--secondary-light);
 }
 
+.event-list__load {
+  margin: 0 auto;
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--secondary-light);
+}
+
+.event-list__load:hover {
+  background-color: var(--secondary);
+}
+
 .new-event__link {
   text-align: center;
 }
