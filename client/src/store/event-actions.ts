@@ -58,7 +58,7 @@ export const fetchEvents = (
   offset: number = 0
 ) => {
   const { replaceEvents, addEvents } = eventActions;
-  
+
   return async (dispatch: any) => {
     dispatch(
       showNotification({
@@ -74,6 +74,14 @@ export const fetchEvents = (
       });
       if (replace) {
         dispatch(replaceEvents({ events: res.data.result }));
+      } else if (res.data.result.length === 0) {
+        dispatch(
+          showNotification({
+            type: UiTypes.Success,
+            title: UiTitles.NoMoreEventsToFetch,
+            message: "All events already fetched",
+          })
+        );
       } else {
         dispatch(addEvents({ events: res.data.result }));
       }

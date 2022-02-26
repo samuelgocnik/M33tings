@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IEvent } from "../../models/Event";
 import EventListItem from "./EventListItem";
@@ -16,6 +16,13 @@ const EventList = () => {
   const dispatch = useAppDispatch();
 
   const [offset, setOffset] = useState<number>(0);
+  const [allowFetching, setAllowFetching] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (notification.title === UiTitles.NoMoreEventsToFetch) {
+      setAllowFetching(false);
+    }
+  }, [notification.title]);
 
   const loadEventsHandler = () => {
     dispatch(fetchEvents(false, 5, offset + 5));
@@ -43,8 +50,10 @@ const EventList = () => {
         <Button
           type="button"
           className={classes["event-list__load"]}
-          text="Load next events..."
-          disabled={false}
+          text={
+            allowFetching ? "Load more events..." : "No more events to fetch"
+          }
+          disabled={!allowFetching}
           onClick={loadEventsHandler}
         />
       </div>

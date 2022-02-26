@@ -28,4 +28,5 @@ export enum UiTitles {
   SuccessfullyLoggedOut,
   EditingEventParticipant,
   EventParticipantSuccessfullyEdited,
+  NoMoreEventsToFetch,
 }
