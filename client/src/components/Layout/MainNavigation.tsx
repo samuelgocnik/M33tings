@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BEMHelper from "react-bem-helper";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/use-dispatch";
 import { UiTitles, UiTypes } from "../../models/Ui";
 import { authActions } from "../../store/auth-slice";
@@ -18,7 +18,7 @@ const MainNavigation = () => {
   const { showNotification } = uiActions;
   const { logout } = authActions;
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function logoutHandler() {
@@ -33,7 +33,7 @@ const MainNavigation = () => {
         })
       );
       setIsLoading(false);
-      history.push("/login");
+      navigate("/login");
     } catch (error) {
       setIsLoading(false);
       console.log(error);

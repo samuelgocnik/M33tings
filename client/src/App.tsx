@@ -1,56 +1,97 @@
-import React, { Suspense, useEffect } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import PrivateRoute from './components/Routes/PrivateRoute';
-import PublicRoute from './components/Routes/PublicRoute';
-import Layout from './components/Layout/Layout';
-import LoadingSpinner from './components/UI/Loading/LoadingSpinner';
-import Axios from 'axios';
-import { useAppDispatch } from './hooks/use-dispatch';
-import { useAppSelector } from './hooks/use-selector';
-import { initializeUser } from './store/auth-actions';
+import React, { Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import PublicRoute from "./components/Routes/PublicRoute";
+import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import Layout from "./components/Layout/Layout";
+import LoadingSpinner from "./components/UI/Loading/LoadingSpinner";
+import Axios from "axios";
+import { useAppDispatch } from "./hooks/use-dispatch";
+import { useAppSelector } from "./hooks/use-selector";
+import { initializeUser } from "./store/auth-actions";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
-const LoginPage = React.lazy(() => import('./pages/LoginPage'));
-const SignupPage = React.lazy(() => import('./pages/SignupPage'));
-const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
-const MeetingsPage = React.lazy(() => import('./pages/MeetingsPage'));
-const NewMeetingPage = React.lazy(() => import('./pages/NewMeetingPage'));
+const LoginPage = React.lazy(() => import("./pages/LoginPage"));
+const SignupPage = React.lazy(() => import("./pages/SignupPage"));
+const ProfilePage = React.lazy(() => import("./pages/ProfilePage"));
+const MeetingsPage = React.lazy(() => import("./pages/MeetingsPage"));
+const NewMeetingPage = React.lazy(() => import("./pages/NewMeetingPage"));
 
 function App() {
-
   const dispatch = useAppDispatch();
-  const token = useAppSelector(state => state.auth.token);
-  Axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` };
+  const token = useAppSelector((state) => state.auth.token);
+  Axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
+
+  const loggedIn: boolean = !!useAppSelector((state) => state.auth.token);
+  const location = useLocation();
 
   useEffect(() => {
-    dispatch(initializeUser())
-    return () => { };
+    dispatch(initializeUser());
+    return () => {};
   }, [dispatch]);
 
   return (
     <Layout>
       <Suspense fallback={<LoadingSpinner />}>
-        <Switch>
-          <Route path={'/'} exact>
-            <Redirect to="/meetings" />
-          </Route>
-          <PublicRoute path={'/login'} component={LoginPage} />
+        <TransitionGroup component={null}>
+          <CSSTransition
+            classNames="page-fade"
+            timeout={2000}
+            key={location.key}
+            unmountOnExit
+            mountOnEnter
+          >
+            <Routes location={location}>
+              <Route path={"/"} element={<Navigate to="/meetings" />} />
 
-          <PublicRoute path={'/signup'} component={SignupPage} />
+              <Route
+                path="login"
+                element={
+                  <PublicRoute isAllowed={!loggedIn}>
+                    <LoginPage />
+                  </PublicRoute>
+                }
+              />
 
-          <PrivateRoute path={'/profile'} exact component={ProfilePage} />
+              <Route
+                path="signup"
+                element={
+                  <PublicRoute isAllowed={!loggedIn}>
+                    <SignupPage />
+                  </PublicRoute>
+                }
+              />
 
-          <PrivateRoute path={'/meetings'} exact component={MeetingsPage} />
+              <Route
+                path="profile"
+                element={
+                  <ProtectedRoute isAllowed={loggedIn}>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
 
-          <PrivateRoute
-            path={'/new-meeting'}
-            exact
-            component={NewMeetingPage}
-          />
+              <Route
+                path="meetings"
+                element={
+                  <ProtectedRoute isAllowed={loggedIn}>
+                    <MeetingsPage />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="*">
-            <Redirect to="/" />
-          </Route>
-        </Switch>
+              <Route
+                path="new-meeting"
+                element={
+                  <ProtectedRoute isAllowed={loggedIn}>
+                    <NewMeetingPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="*" element={<div>Not found</div>} />
+            </Routes>
+          </CSSTransition>
+        </TransitionGroup>
       </Suspense>
     </Layout>
   );

@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;700&display=swap');
-@import url('../src/utils/variables.css');
-@import url('../src/utils/normalize.css');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;700&display=swap");
+@import url("../src/utils/variables.css");
+@import url("../src/utils/normalize.css");
 
 body {
-  font-family: 'Open Sans', 'Lato', sans-serif;
+  font-family: "Open Sans", "Lato", sans-serif;
   margin: 0;
   font-size: 16px;
   width: 100%;
@@ -20,4 +20,21 @@ body {
   -webkit-box-shadow: 0.3rem 0.3rem 0.5rem 0.1rem rgba(0, 0, 0, 0.11);
   box-shadow: 0.3rem 0.3rem 0.5rem 0.1rem rgba(0, 0, 0, 0.11);
   transition: var(--transition-short);
+}
+
+.page-fade-enter {
+  opacity: 0;
+}
+.page-fade-enter.page-fade-enter-active {
+  opacity: 1;
+
+  transition: opacity 2000ms ease-out;
+}
+.page-fade-exit {
+  opacity: 1;
+}
+.page-fade-exit.fade-exit-active {
+  opacity: 0;
+
+  transition: opacity 2000ms ease-out;
 }
