@@ -22,19 +22,20 @@ body {
   transition: var(--transition-short);
 }
 
+.page-fade-appear,
 .page-fade-enter {
   opacity: 0;
+  z-index: 1;
 }
+.page-fade-appear-active,
 .page-fade-enter.page-fade-enter-active {
   opacity: 1;
-
-  transition: opacity 2000ms ease-out;
+  transition: opacity 450ms linear 250ms;
 }
 .page-fade-exit {
   opacity: 1;
 }
-.page-fade-exit.fade-exit-active {
+.page-fade-exit.page-fade-exit-active {
   opacity: 0;
-
-  transition: opacity 2000ms ease-out;
+  transition: opacity 150ms linear;
 }

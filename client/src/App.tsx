@@ -32,66 +32,46 @@ function App() {
   return (
     <Layout>
       <Suspense fallback={<LoadingSpinner />}>
-        <TransitionGroup component={null}>
-          <CSSTransition
-            classNames="page-fade"
-            timeout={2000}
-            key={location.key}
-            unmountOnExit
-            mountOnEnter
-          >
-            <Routes location={location}>
-              <Route path={"/"} element={<Navigate to="/meetings" />} />
+        <Routes location={location}>
+          <Route path={"/"} element={<Navigate to="/meetings" />} />
 
-              <Route
-                path="login"
-                element={
-                  <PublicRoute isAllowed={!loggedIn}>
-                    <LoginPage />
-                  </PublicRoute>
-                }
-              />
+          <Route
+            path="login"
+            element={
+              <PublicRoute isAllowed={!loggedIn} compoment={LoginPage} />
+            }
+          />
 
-              <Route
-                path="signup"
-                element={
-                  <PublicRoute isAllowed={!loggedIn}>
-                    <SignupPage />
-                  </PublicRoute>
-                }
-              />
+          <Route
+            path="signup"
+            element={
+              <PublicRoute isAllowed={!loggedIn} compoment={SignupPage} />
+            }
+          />
 
-              <Route
-                path="profile"
-                element={
-                  <ProtectedRoute isAllowed={loggedIn}>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute isAllowed={loggedIn} compoment={ProfilePage} />
+            }
+          />
 
-              <Route
-                path="meetings"
-                element={
-                  <ProtectedRoute isAllowed={loggedIn}>
-                    <MeetingsPage />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="meetings"
+            element={
+              <ProtectedRoute isAllowed={loggedIn} compoment={MeetingsPage} />
+            }
+          />
 
-              <Route
-                path="new-meeting"
-                element={
-                  <ProtectedRoute isAllowed={loggedIn}>
-                    <NewMeetingPage />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="new-meeting"
+            element={
+              <ProtectedRoute isAllowed={loggedIn} compoment={NewMeetingPage} />
+            }
+          />
 
-              <Route path="*" element={<div>Not found</div>} />
-            </Routes>
-          </CSSTransition>
-        </TransitionGroup>
+          <Route path="*" element={<div>Not found</div>} />
+        </Routes>
       </Suspense>
     </Layout>
   );
