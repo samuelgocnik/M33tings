@@ -16,7 +16,6 @@ const MainNavigation = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [areMeetingsOpen, setAreMeetingsOpen] = useState<boolean>(false);
 
   async function logoutHandler() {
     try {
