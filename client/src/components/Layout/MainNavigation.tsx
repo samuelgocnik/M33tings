@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BEMHelper from "react-bem-helper";
+import { NavLink } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/use-dispatch";
 import { UiTitles, UiTypes } from "../../models/Ui";
@@ -8,11 +8,7 @@ import { uiActions } from "../../store/ui-slice";
 import Button from "../UI/Button";
 import LoadingDots from "../UI/Loading/LoadingDots";
 import DesktopLogo from "./../../assets/icons/m33tings-desktop-stroke.svg";
-import "./MainNavigation.css";
-
-const classes = new BEMHelper({
-  name: "header",
-});
+import classes from "./MainNavigation.module.css";
 
 const MainNavigation = () => {
   const { showNotification } = uiActions;
@@ -20,6 +16,7 @@ const MainNavigation = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [areMeetingsOpen, setAreMeetingsOpen] = useState<boolean>(false);
 
   async function logoutHandler() {
     try {
@@ -41,31 +38,45 @@ const MainNavigation = () => {
   }
 
   return (
-    <header {...classes()}>
+    <header className={classes.header}>
       <Link to="/">
-        <img {...classes("logo")} src={DesktopLogo} alt="main logo" />
+        <img
+          className={classes["header__logo"]}
+          src={DesktopLogo}
+          alt="main logo"
+        />
       </Link>
-      <nav>
-        <ul {...classes("links")}>
-          <li {...classes("item")}>
-            <Link to="/meetings">Meetings</Link>
-          </li>
-          <li {...classes("item")}>
-            <Link to="/profile">Profile</Link>
-          </li>
-          <li {...classes("item", "logout")}>
-            {!isLoading && (
-              <Button
-                text={"Logout"}
-                type="button"
-                className=""
-                onClick={logoutHandler}
-                disabled={false}
-              />
-            )}
-            {isLoading && <LoadingDots />}
-          </li>
-        </ul>
+      <nav className={classes["header__links"]}>
+        <NavLink
+          to="/meetings"
+          className={({ isActive }) =>
+            isActive
+              ? `${classes["header__item"]} ${classes["header__item--active"]}`
+              : `${classes["header__item"]}`
+          }
+        >
+          Meetings
+        </NavLink>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) =>
+            isActive
+              ? `${classes["header__item"]} ${classes["header__item--active"]}`
+              : `${classes["header__item"]}`
+          }
+        >
+          Profile
+        </NavLink>
+        {!isLoading && (
+          <Button
+            text={"Logout"}
+            type="button"
+            className={`${classes["header__item"]} ${classes["header__item--logout"]}`}
+            onClick={logoutHandler}
+            disabled={false}
+          />
+        )}
+        {isLoading && <LoadingDots />}
       </nav>
     </header>
   );

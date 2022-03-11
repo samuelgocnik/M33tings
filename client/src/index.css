@@ -21,21 +21,3 @@ body {
   box-shadow: 0.3rem 0.3rem 0.5rem 0.1rem rgba(0, 0, 0, 0.11);
   transition: var(--transition-short);
 }
-
-.page-fade-appear,
-.page-fade-enter {
-  opacity: 0;
-  z-index: 1;
-}
-.page-fade-appear-active,
-.page-fade-enter.page-fade-enter-active {
-  opacity: 1;
-  transition: opacity 450ms linear 250ms;
-}
-.page-fade-exit {
-  opacity: 1;
-}
-.page-fade-exit.page-fade-exit-active {
-  opacity: 0;
-  transition: opacity 150ms linear;
-}

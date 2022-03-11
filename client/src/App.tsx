@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import PublicRoute from "./components/Routes/PublicRoute";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import Layout from "./components/Layout/Layout";
@@ -8,7 +8,7 @@ import Axios from "axios";
 import { useAppDispatch } from "./hooks/use-dispatch";
 import { useAppSelector } from "./hooks/use-selector";
 import { initializeUser } from "./store/auth-actions";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 const SignupPage = React.lazy(() => import("./pages/SignupPage"));
@@ -22,7 +22,6 @@ function App() {
   Axios.defaults.headers.common = { Authorization: `Bearer ${token}` };
 
   const loggedIn: boolean = !!useAppSelector((state) => state.auth.token);
-  const location = useLocation();
 
   useEffect(() => {
     dispatch(initializeUser());
@@ -32,8 +31,15 @@ function App() {
   return (
     <Layout>
       <Suspense fallback={<LoadingSpinner />}>
-        <Routes location={location}>
-          <Route path={"/"} element={<Navigate to="/meetings" />} />
+        <Routes>
+          <Route path="/" element={<Navigate to="meetings" />} />
+
+          <Route
+            path="meetings"
+            element={
+              <ProtectedRoute isAllowed={loggedIn} compoment={MeetingsPage} />
+            }
+          />
 
           <Route
             path="login"
@@ -53,13 +59,6 @@ function App() {
             path="profile"
             element={
               <ProtectedRoute isAllowed={loggedIn} compoment={ProfilePage} />
-            }
-          />
-
-          <Route
-            path="meetings"
-            element={
-              <ProtectedRoute isAllowed={loggedIn} compoment={MeetingsPage} />
             }
           />
 
