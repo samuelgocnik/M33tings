@@ -1,6 +1,5 @@
 import React, { ComponentType } from "react";
 import { Navigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/use-selector";
 
 type RouteProps = {
   isAllowed: boolean;

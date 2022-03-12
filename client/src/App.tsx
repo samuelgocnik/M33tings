@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import PublicRoute from "./components/Routes/PublicRoute";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import Layout from "./components/Layout/Layout";
@@ -8,7 +8,6 @@ import Axios from "axios";
 import { useAppDispatch } from "./hooks/use-dispatch";
 import { useAppSelector } from "./hooks/use-selector";
 import { initializeUser } from "./store/auth-actions";
-// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 const SignupPage = React.lazy(() => import("./pages/SignupPage"));
@@ -33,28 +32,24 @@ function App() {
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<Navigate to="meetings" />} />
-
           <Route
             path="meetings"
             element={
               <ProtectedRoute isAllowed={loggedIn} compoment={MeetingsPage} />
             }
           />
-
           <Route
             path="login"
             element={
               <PublicRoute isAllowed={!loggedIn} compoment={LoginPage} />
             }
           />
-
           <Route
             path="signup"
             element={
               <PublicRoute isAllowed={!loggedIn} compoment={SignupPage} />
             }
           />
-
           <Route
             path="profile"
             element={
@@ -68,7 +63,6 @@ function App() {
               <ProtectedRoute isAllowed={loggedIn} compoment={NewMeetingPage} />
             }
           />
-
           <Route path="*" element={<div>Not found</div>} />
         </Routes>
       </Suspense>
