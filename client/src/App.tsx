@@ -8,8 +8,8 @@ import Axios from "axios";
 import { useAppDispatch } from "./hooks/use-dispatch";
 import { useAppSelector } from "./hooks/use-selector";
 import { initializeUser } from "./store/auth-actions";
+import LoginPage from "./pages/LoginPage";
 
-const LoginPage = React.lazy(() => import("./pages/LoginPage"));
 const SignupPage = React.lazy(() => import("./pages/SignupPage"));
 const ProfilePage = React.lazy(() => import("./pages/ProfilePage"));
 const MeetingsPage = React.lazy(() => import("./pages/MeetingsPage"));
