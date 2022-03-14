@@ -33,12 +33,16 @@ const NewEvent = () => {
 
   useEffect(() => {
     dispatch(setNoneNotification());
-  }, []);
+  }, [dispatch, setNoneNotification]);
 
   const includeAddressHandler = () => {
     setIncludeAddress((prev) => {
       return !prev;
     });
+  };
+
+  const changeDateHandler = (newDate: Date) => {
+    setDate(newDate);
   };
 
   const submitFormHandler = (event: React.FormEvent) => {
@@ -86,9 +90,9 @@ const NewEvent = () => {
   return (
     <Card className={classes["new-event-form"]}>
       <h1 className={classes["new-event-form__heading"]}>Create a new event</h1>
-      
+
       <Message type={notification.type} value={notification.message} />
-      
+
       <form onSubmit={submitFormHandler}>
         <Input
           ref={nameInputRef}
@@ -108,7 +112,7 @@ const NewEvent = () => {
         />
         <div className={classes["new-event-form__datetime"]}>
           <DateTimePicker
-            onChange={(x) => setDate(x)}
+            onChange={changeDateHandler}
             value={date}
             className="datetime-picker"
             format={"dd/MM/y HH:mm"}

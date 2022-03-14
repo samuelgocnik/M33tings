@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { IEvent } from "../../models/Event";
 import EventListItem from "./EventListItem";
@@ -11,6 +11,8 @@ import Button from "../UI/Button";
 import { fetchEvents } from "../../store/event-actions";
 
 const EventList = () => {
+  console.log("rendering event list");
+
   const events = useAppSelector((state) => state.events.events);
   const notification = useAppSelector((state) => state.ui.notification);
   const dispatch = useAppDispatch();
@@ -24,10 +26,10 @@ const EventList = () => {
     }
   }, [notification.title]);
 
-  const loadEventsHandler = () => {
+  const loadEventsHandler = useCallback(() => {
     dispatch(fetchEvents(false, 5, offset + 5));
     setOffset(offset + 5);
-  };
+  }, [dispatch, offset]);
 
   const listOfEvents = events.map((x: IEvent) => (
     <EventListItem key={x.id} {...x} />

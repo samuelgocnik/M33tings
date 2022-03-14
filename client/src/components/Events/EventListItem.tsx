@@ -12,6 +12,7 @@ import { useAppSelector } from "../../hooks/use-selector";
 import EventParticipants from "./EventParticipants";
 
 const EventListItem = (props: IEvent) => {
+  console.log("rendering event -> ", props.name);
   const userId: number = useAppSelector((state) => state.auth.user?.id) || 0;
 
   const deleteEventHandler = () => {};
@@ -76,4 +77,4 @@ const EventListItem = (props: IEvent) => {
   );
 };
 
-export default EventListItem;
+export default React.memo(EventListItem);
