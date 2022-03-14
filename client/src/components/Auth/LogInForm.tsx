@@ -21,20 +21,20 @@ function LogIn() {
   const passwordInputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
-    if (notification.type === UiTypes.Error) {
-      setNoneNotification();
-    }
-  }, []);
+    dispatch(setNoneNotification());
+  }, [dispatch, setNoneNotification]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(setNoneNotification());
-    }, 8000);
-    return () => clearTimeout(timer);
+    if (notification.type !== UiTypes.None) {
+      const timer = setTimeout(() => {
+        dispatch(setNoneNotification());
+      }, 8000);
+      return () => clearTimeout(timer);
+    }
   }, [dispatch, setNoneNotification, notification]);
 
   //submit login form
-  async function submitHandler(event: { preventDefault: () => void }) {
+  const submitHandler = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
     const name: string = nameInputRef.current?.value.trim() || "";
@@ -61,14 +61,14 @@ function LogIn() {
       return;
     }
     dispatch(loginUser(name, password));
-  }
+  };
 
   return (
     <Card className={classes["auth-form"]}>
       <h1 className={classes["auth-form__heading"]}>Log In</h1>
 
       <Message type={notification.type} value={notification.message} />
-      
+
       <form onSubmit={submitHandler}>
         <Input
           ref={nameInputRef}

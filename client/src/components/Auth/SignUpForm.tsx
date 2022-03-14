@@ -21,18 +21,14 @@ const SignUpForm = () => {
   const passwordInputRef = useRef<HTMLInputElement>();
   const passwordConfirmationInputRef = useRef<HTMLInputElement>();
 
-  // on mount restore notification
+  // on mount and unmount restore notification
   useEffect(() => {
     dispatch(setNoneNotification());
-  }, [dispatch, setNoneNotification]);
 
-  useEffect(() => {
     return () => {
-      if (notification.type === UiTypes.Error) {
-        dispatch(setNoneNotification());
-      }
+      dispatch(setNoneNotification());
     };
-  });
+  }, [dispatch, setNoneNotification]);
 
   async function submitHandler(event: { preventDefault: () => void }) {
     event.preventDefault();
@@ -78,7 +74,7 @@ const SignUpForm = () => {
       <h1 className={classes["auth-form__heading"]}>Sign Up</h1>
 
       <Message type={notification.type} value={notification.message} />
-      
+
       <form onSubmit={submitHandler}>
         <Input
           ref={nameInputRef}
